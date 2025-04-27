@@ -1,0 +1,30 @@
+# Ignore Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environments
+venv/
+env/
+
+# Ignore dataset files
+Datasets/
+Resids/
+raw_ocr_new/
+receipt_ner_model/
+product_classifier/
+
+# Ignore database and models
+*.db
+*.pkl
+
+# Ignore Label Studio exports
+*.json
+
+# Ignore MacOS system files
+.DS_Store
+
+# Ignore logs and temp files
+*.log
+*.tmp
