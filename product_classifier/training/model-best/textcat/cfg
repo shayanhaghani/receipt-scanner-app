@@ -1,0 +1,24 @@
+{
+  "labels":[
+    "Groceries",
+    "Produce",
+    "Snacks",
+    "Drinks",
+    "Dairy",
+    "Books/Magazine",
+    "Coffee",
+    "Clothes",
+    "Personal Care",
+    "Household",
+    "Baby",
+    "Pet",
+    "Transportation",
+    "Healthcare",
+    "Dining out",
+    "Entertainment",
+    "Gift & Flowers",
+    "Alcohol Drinks"
+  ],
+  "threshold":0.0,
+  "positive_label":null
+}

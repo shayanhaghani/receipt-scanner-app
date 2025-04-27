@@ -1,0 +1,28 @@
+: Leaside LEA
+416-484-0090
+1860 Bayview Ave
+: 1860 Bayview Ave
+: 1860 Bayview Ave
+: WHOLE
+FOODS
+®
+DATE: 02-02-25
+TRANS: 
+TAX: 864826995
+TAX: 0.00
+Balance to pay: $18.07
+Balance to pay: $18.07
+: Leaside LEA
+416-484-0090
+1860 Bayview Ave
+: WHOLE
+FOODS
+®
+: 416-484-0090
+: http: //www.mfm.com/
+TAX IND: N
+RATE: 0.0%
+GROSS: 18.07
+No. items: 3
+STORE: 10500 257 12499240 34596
+TIME: 19: 16

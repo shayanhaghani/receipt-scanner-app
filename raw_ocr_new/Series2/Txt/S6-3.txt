@@ -1,0 +1,42 @@
+
+WHOLE
+FOODS
+R
+MARKET
+Leaside LEA
+416-484-0090
+1860 Bayview Ave
+TAX 864826995
+SALE TRANSACTION
+PEPPER JALAPENO GREEN OG
+0.090 kg @ $13.21/kg
+$1.19 N
+TARE = ( 0.010 kg )
+Employee Discount 20.0%
+$0.24
+TAX SUMMARY
+TAX IND
+RATE
+GROSS
+TAX
+N
+0.0%
+0.95
+0.00
+No. items 1
+Balance to pay
+$0.95
+M/C
+$0.95
+** TRANSACTION RECORD **
+Tran. #: 4117
+Type: Purchase
+Acct: MasterCard
+Card #: XXXXXXXXXXXX2340
+Amount CAD$0.95
+Reference #:
+0012251440 H
+Auth. #: 07847Z
+WF00D13SS09 005
+04/15/2025
+7:39:27 PM

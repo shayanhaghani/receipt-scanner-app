@@ -1,0 +1,42 @@
+: Leaside LEA
+416-484-0090
+1860 Bayview Ave
+: 1860 Bayview Ave
+: Leaside LEA
+: 1860 Bayview Ave
+: WHOLE
+FOODS
+MARKET
+M/C: $16.65
+Employee Discount 20.0%: $3.99
+DATE: 15-04-25
+: 04/15/2025
+Tran #:: 17121
+TRANS DATE: 54152
+TAX: 864826995
+Balance to pay: $16.65
+Amount: CAD$16.65
+Balance to pay: $16.65
+: Leaside LEA
+416-484-0090
+1860 Bayview Ave
+: Leaside LEA
+: WHOLE
+FOODS
+MARKET
+: http: //www.wfn.com/CANfeedback
+Employee Discount: 20.0%
+No. items: 4
+Type:: Purchase
+Acct:: MasterCard
+Card #: XXXXXXXXXXXX2340
+Reference #:: 0012250890 H
+Auth #: 05579Z
+STORE: 10500 253 12416325
+TIME: 16: 35
+ITEM: MUSTARD YELLOW OG | PRICE: $4.49 | EXPENSE_ROW: MUSTARD YELLOW OG
+COTTON PADS 70CT $4.49 N
+ITEM: CRACKERS SEA SALT | PRICE: $6.49 | EXPENSE_ROW: CRACKERS SEA SALT $6.49 H
+ITEM: OIL COOKING CANOLA | PRICE: $6.99 N | EXPENSE_ROW: $2.00 N
+OIL COOKING CANOLA
+$6.99 N

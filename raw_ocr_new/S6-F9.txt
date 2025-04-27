@@ -1,0 +1,64 @@
+: FARM BOY - ST CLAIR
+81 St Clair Ave East
+Toronto, Ontario
+: 81 St Clair Ave East
+: ST CLAIR
+: Toronto,
+: Ontario
+: FARM BOY
+: FARM BOY - ST CLAIR
+81 St Clair Ave East
+Toronto, Ontario
+: FARM BOY
+Master: $11.58
+Date :: 04-22-2025
+: 4/22/2025
+: Apr 22 2025
+Inv#:: 00127853
+H.S.T.#: 84179 7046 RT0001
+Net Sales: $11.58
+TOTAL SALES: $11.58
+SUB TOTAL: $11.58
+Amount :: $11.58
+: FARM BOY - ST CLAIR
+81 St Clair Ave East
+Toronto, Ontario
+: FARM BOY
+: FARM BOY
+Tel:: (416) - 963 8949
+: 1-833-788-3401
+: www.farmboy.ca
+Your Store Manager is:: Philip Jones Jr.
+Trs#:: 128756
+Balance: $0.00
+New customer balance: $0.00
+Item count: 4
+Trans#: 128756
+TRANSACTION RECORD: Card : 2340 [7900]
+A0000000041010
+Card Type : MC (Mastercard)
+MASTERCARD
+Trans Type : PURCHASE
+Card Entry : RF(M)
+Auth # : 08390Z
+Sequence # : 001941004
+Trace ID : MCS2XHEKR0422
+Date : 04-22-2025
+Time : 10:39:46
+Card :: 2340 [7900]
+Card Type :: MC (Mastercard)
+Trans Type :: PURCHASE
+Card Entry :: RF(M)
+Auth # :: 08390Z
+Sequence # :: 001941004
+Trace ID :: MCS2XHEKR0422
+Time :: 10:39:46
+GF
+=: GLUTEN FREE Items
+-HST=: 13%
+*HST=: 13% Prep Food
+ITEM: CUCUMBER Eng Reg | PRICE: $1.50 | EXPENSE_ROW: CUCUMBER Eng Reg $1.50
+ITEM: Romaine Hearts | PRICE: $4.99 | EXPENSE_ROW: Romaine Hearts $4.99
+PRODUCT_CODE: eilson35%237 | ITEM: CREAM eilson35%237 | PRICE: $3.59 | EXPENSE_ROW: CREAM eilson35%237 $3.59
+PRICE: $1.50 | QUANTITY: 1 | UNIT_PRICE: $3.00 | EXPENSE_ROW: 1 @ 2/ $3.00 (2/$3.00)
+CUCUMBER Eng Reg $1.50

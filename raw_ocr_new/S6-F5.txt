@@ -1,0 +1,43 @@
+: Yorkville YRK
+416-944-0500
+87 Avenue Road
+: 87 Avenue Road
+: Yorkville
+: Yorkville YRK
+416-944-0500
+87 Avenue Road
+VISA: $7.18
+Employee Discount 20.0%: -$1.80
+DATE: 15-04-25
+: 04/15/2025
+Tran. #:: 15065
+TRANS.: 148754
+TAX: 894696764
+GROSS: 7.18
+TAX: 0.00
+Balance to pay: $7.18
+Amount: CAD$7.18
+Balance to pay: $7.18
+: Yorkville YRK
+416-944-0500
+87 Avenue Road
+: 416-944-0500
+: http: //www.wfm.com/CANfeedback
+Employee Discount: 20.0%
+TAX IND: N
+RATE: 0.0%
+No. items: 2
+Type:: Purchase
+Acct:: Visa
+Card #:: xxxxxxxxxxxx6104
+Reference #:: 0016351350 H
+Auth. #:: 08783N
+Visa CREDIT: A0000000031010
+STORE: 10168
+TILL: 959
+OP NO.: 19800839
+TIME: 18: 06
+ITEM: French Baguette | PRICE: $3.49 N | EXPENSE_ROW: $3.49 N
+French Baguette
+ITEM: Sourdough Round Bread | PRICE: $5.49 N | EXPENSE_ROW: $5.49 N
+Sourdough Round Bread

@@ -1,0 +1,674 @@
+item,category
+Swiss Cheese,Groceries
+Milk 2%,Groceries
+Butter Unsalted,Groceries
+Greek Yogurt,Groceries
+Mozzarella Cheese,Groceries
+Pork Schnitzel,Groceries
+Chicken Breast,Groceries
+Ground Beef,Groceries
+Smoked Turkey,Groceries
+Beef Sausage,Groceries
+Whole Wheat Bread,Groceries
+Croissant,Groceries
+Bagel Sesame,Groceries
+Baguette,Groceries
+Cinnamon Roll,Groceries
+Tomato Vine,Groceries
+Romaine Lettuce,Groceries
+Cucumber English,Groceries
+Broccoli Crown,Groceries
+Eggplant Black,Groceries
+Gala Apple,Groceries
+Banana,Groceries
+Strawberries,Groceries
+Blueberries,Groceries
+Orange Navel,Groceries
+Carrot Organic,Groceries
+Onion Yellow,Groceries
+Garlic,Groceries
+Mushroom White,Groceries
+Avocado Hass,Groceries
+Peanut Butter,Groceries
+Tomato Ketchup,Groceries
+Olive Oil,Groceries
+Canned Tuna,Groceries
+Pasta Spaghetti,Groceries
+Rice Basmati,Groceries
+Chickpeas Canned,Groceries
+Almonds Raw,Groceries
+Granola Bars,Snacks
+Cereal Corn Flakes,Groceries
+Ice Cream Vanilla,Groceries
+Frozen Pizza,Groceries
+Frozen Mixed Vegetables,Groceries
+Frozen Berries,Groceries
+Frozen Fries,Groceries
+Toilet Paper 12pk,Household
+Laundry Detergent,Household
+Dish Soap,Household
+Garbage Bags,Household
+Paper Towel,Household
+Shampoo,Personal Care
+Toothpaste,Personal Care
+Body Wash,Personal Care
+Deodorant,Personal Care
+Hand Sanitizer,Personal Care
+Water 24 Pack,Groceries
+Orange Juice,Groceries
+Cola 2L,Groceries
+Green Tea,Groceries
+Coffee Ground,Groceries
+Energy Drink,Groceries
+Chocolate Bar,Snacks
+Potato Chips,Snacks
+Crackers,Snacks
+Trail Mix,Snacks
+Popcorn,Snacks
+Diapers Size 3,Baby
+Baby Wipes,Baby
+Baby Formula,Baby
+Baby Shampoo,Baby
+Baby Lotion,Baby
+Cat Food,Pet
+Dog Food,Pet
+Cat Litter,Pet
+Dog Treats,Pet
+Pet Shampoo,Pet
+Flour All-Purpose,Groceries
+Sugar White,Groceries
+Baking Soda,Groceries
+Yeast Active Dry,Groceries
+Vanilla Extract,Groceries
+Soy Sauce,Groceries
+Rice Noodles,Groceries
+Coconut Milk,Groceries
+Miso Paste,Groceries
+Kimchi,Groceries
+Tortilla Wrap,Groceries
+Salsa,Groceries
+Feta Cheese,Groceries
+Kefir,Groceries
+Beef Jerky,Snacks
+Quinoa,Groceries
+Couscous,Groceries
+Raisin Bran,Groceries
+Ice Cubes Bag,Groceries
+Lemon,Groceries
+Lime,Groceries
+Apple Juice,Groceries
+Green Grapes,Groceries
+Red Grapes,Groceries
+Vanilla extract,Groceries
+Bone broth,Groceries
+Canned soup,Groceries
+Broth powder,Groceries
+Baking powder,Groceries
+Traditional yeast,Groceries
+Pudding mix,Groceries
+Oil spray,Groceries
+White quinoa,Groceries
+Marinara pasta sauce,Groceries
+Butter chicken sauce,Groceries
+Sweet Thai chili,Groceries
+Sumac powder,Groceries
+spices,Groceries
+Potato chips,Snacks
+Multigrain crackers,Snacks
+Popcorn seasoning,Snacks
+Parmesan cheese,Groceries
+Greek yogurt,Groceries
+Skim milk,Groceries
+Olive oil,Groceries
+Balsamic vinegar,Groceries
+Avocado oil,Groceries
+Wine,Alcoholic Drinks
+Beer,Alcoholic Drinks
+Tequila,Alcoholic Drinks
+Smoked beef,Groceries
+White rice flour,Groceries
+Flour artisan bread,Groceries
+Tonic water,Groceries
+Kombucha,Groceries
+Soda,Groceries
+Ginger beer,Groceries
+Lemonade,Groceries
+Sparkling water,Groceries
+Almond flour,Groceries
+Peach rings,Groceries
+Almond Milk,Groceries
+Soy Milk,Groceries
+Oat Milk,Groceries
+Coconut Yogurt,Groceries
+Goat Cheese,Groceries
+Turkey Bacon,Groceries
+Chicken Thighs,Groceries
+Beef Steak,Groceries
+Ham Slices,Groceries
+Salami,Groceries
+Gluten-Free Bread,Groceries
+Rye Bread,Groceries
+Multigrain Bread,Groceries
+Banana Bread,Groceries
+Donuts,Groceries
+Zucchini,Groceries
+Kale,Groceries
+Spinach,Groceries
+Sweet Potato,Groceries
+Celery,Groceries
+Granola,Snacks
+Canned Corn,Groceries
+Instant Noodles,Groceries
+Honey,Groceries
+Canned Beans,Groceries
+Frozen Corn,Groceries
+Frozen Spinach,Groceries
+Frozen Peas,Groceries
+Frozen Chicken Wings,Groceries
+Frozen Dumplings,Groceries
+All-Purpose Cleaner,Household
+Glass Cleaner,Household
+Bleach,Household
+Dishwasher Tabs,Household
+Fabric Softener,Household
+Face Wash,Personal Care
+Mouthwash,Personal Care
+Hair Gel,Personal Care
+Facial Tissue,Personal Care
+Cotton Swabs,Personal Care
+Coconut Water,Groceries
+Iced Tea,Groceries
+Sports Drink,Groceries
+Tonic Water,Groceries
+Apple Cider,Groceries
+Pretzels,Snacks
+Fruit Snacks,Snacks
+Cheese Puffs,Groceries
+Rice Crackers,Snacks
+Beef Sticks,Groceries
+Baby Oil,Baby
+Pacifier,Baby
+Baby Cereal,Baby
+Baby Bath Wash,Baby
+Bottle Warmer,Baby
+Dog Shampoo,Pet
+Cat Treats,Pet
+Dog Collar,Pet
+Cat Toy,Pet
+Flea Medicine,Pet
+Cake Flour,Groceries
+Brown Sugar,Groceries
+Molasses,Groceries
+Cornstarch,Groceries
+Cocoa Powder,Groceries
+Rice Paper,Groceries
+Chili Sauce,Groceries
+Wasabi Paste,Groceries
+Fish Sauce,Groceries
+Soba Noodles,Groceries
+Taco Shells,Groceries
+Refried Beans,Groceries
+Hot Sauce,Groceries
+Hummus,Groceries
+Tahini,Groceries
+Ricotta Cheese,Groceries
+Camembert,Groceries
+Paneer,Groceries
+Frozen Shrimp,Groceries
+Frozen Fish Fillets,Groceries
+Frozen Onion Rings,Groceries
+Shaving Cream,Personal Care
+Razor Blades,Personal Care
+Lip Balm,Personal Care
+Baby Monitor,Baby
+Diaper Rash Cream,Baby
+Hamster Food,Pet
+Bird Seed,Pet
+Baking Cups,Groceries
+Sprinkles,Groceries
+Marshmallows,Groceries
+Chia Seeds,Groceries
+Flax Seeds,Groceries
+Energy Bars,Snacks
+Nuts Mixed,Groceries
+Dry Mango Slices,Groceries
+Coconut Chips,Snacks
+Veggie Chips,Snacks
+Frozen Waffles,Groceries
+Frozen Garlic Bread,Groceries
+Stain Remover,Household
+Mop Refill,Household
+Sponge Pack,Household
+Toothbrush,Personal Care
+Hair Conditioner,Personal Care
+Hand Cream,Personal Care
+Beet Juice,Groceries
+Sparkling Apple Juice,Groceries
+Mineral Water,Groceries
+Infused Water,Groceries
+Protein Shake,Groceries
+Frozen Breakfast Sandwich,Groceries
+Frozen Spring Rolls,Groceries
+Frozen Broccoli,Groceries
+Tofu,Groceries
+Tempeh,Groceries
+Vegan Cheese,Groceries
+Vegan Nuggets,Groceries
+Natural Soap,Personal Care
+Laundry Sheets,Household
+Chewing Gum,Snacks
+Rice Cakes,Groceries
+Candy Canes,Snacks
+Matcha Powder,Groceries
+Fruit Jam,Groceries
+Fruit Yogurt,Groceries
+Whipping Cream,Groceries
+Ice Cream Sandwich,Groceries
+Margarine,Groceries
+Butter Stick,Groceries
+Lettuce Iceberg,Groceries
+Ginger Root,Groceries
+Leeks,Groceries
+Radish,Groceries
+Parsnip,Groceries
+Pears,Groceries
+Nectarines,Groceries
+Plums,Groceries
+Apricots,Groceries
+Mandarins,Groceries
+Sparkling Lemon Water,Groceries
+Perrier,Groceries
+Root Beer,Groceries
+Craft Beer,Alcoholic Drinks
+Red Wine,Alcoholic Drinks
+White Wine,Alcoholic Drinks
+Tofu Nuggets,Groceries
+Plant-Based Burger,Groceries
+Frozen Vegan Pizza,Groceries
+Fruit Cups,Groceries
+Seaweed Snacks,Snacks
+Corn Chips,Snacks
+Peanut Clusters,Groceries
+Protein Bar,Snacks
+Body Lotion,Personal Care
+Face Mask,Personal Care
+Bath Bomb,Personal Care
+Pet Towel,Pet
+Pet Collar,Pet
+Baby Bottle,Baby
+Sippy Cup,Baby
+Baby Blanket,Baby
+Allergy Pills,Household
+Room Spray,Household
+Toilet Cleaner,Household
+Scrub Brush,Household
+Glass Wipes,Household
+Gasoline Shell,Transportation
+Uber Ride,Transportation
+Metro Pass,Transportation
+Car Wash,Transportation
+Haircut - Men's,Personal Care
+Haircut - Women's,Personal Care
+Gym Membership,Personal Care
+Dental Cleaning,Healthcare
+Blood Test,Healthcare
+Prescription Medication,Healthcare
+Coffee Shop Latte,Dining Out
+Fast Food Combo,Dining Out
+Pizza Restaurant,Dining Out
+Movie Ticket,Entertainment
+Netflix Subscription,Entertainment
+Spotify Premium,Entertainment
+Streaming Box Office,Entertainment
+Baby Diapers,Baby
+Dog Grooming,Pet
+Vet Visit,Pet
+Birthday Cake Order,Other
+Phone Bill Payment,Other
+Courier Service,Other
+Dry Cleaning,Other
+Office Supplies,Other
+Flower Bouquet,Gifts & Flowers
+Gift Box,Gifts & Flowers
+Greeting Card,Gifts & Flowers
+Chocolate Gift Pack,Gifts & Flowers
+Houseplant Pot,Gifts & Flowers
+Anniversary Gift,Gifts & Flowers
+Birthday Present,Gifts & Flowers
+Valentine Roses,Gifts & Flowers
+Gift Wrapping Service,Gifts & Flowers
+Holiday Basket,Gifts & Flowers
+Blueberry Muffin High Protein Cereal,Groceries
+Puffed Wheat,Groceries
+Puffed Corn,Groceries
+Flax Plus Crunch Cereal,Groceries
+Organic Low Fat Flax Plus Cereal,Groceries
+Organic Honey Corn Flakes,Groceries
+Organic Os Eco Pack,Groceries
+Organic Whole O's Cereal,Groceries
+Eco Crispy Rice,Groceries
+Peanut Butter Whole Grain Clusters,Groceries
+Organic Honey & Oats Granola,Groceries
+Organic Love Crunch Dark Chocolate,Groceries
+Berry,Groceries
+Organic Dark Chocolate Peanut Butter Granola,Groceries
+Banana Cinnamon Super Seed Cereal,Groceries
+Strawberry Lavender Super Seed Cereal,Groceries
+Original Granola,Groceries
+Swiss Type Muesli,Groceries
+Hazelnut & Date Granola,Groceries
+Organic Spearmint Tea,Groceries
+Chamomile Cleanse Tea,Groceries
+Organic Calming Butterfly Herbal Tea,Groceries
+Organic Mint Ginger Herbal Tea,Groceries
+Brown Sugar Oat Latte,Groceries
+Maple Walnut Latte,Groceries
+Barista Almond Milk,Groceries
+Unsweetened Walnut Milk,Groceries
+French Vanilla Oat Creamer,Groceries
+Extra Creamy Oat Beverage,Groceries
+Barista Oat Beverage,Groceries
+Original Oat Milk,Groceries
+Oats Rolled Thick,Groceries
+Organic Extra Thick Rolled Oats,Groceries
+Blueberry Hazelnut Oatmeal Cups,Groceries
+Apple Cinnamon Morning Oats,Groceries
+Organic Old-Fashioned Rolled Oats,Groceries
+Thompson Raisins,Groceries
+Organic Thompson Raisins,Groceries
+Hot and Spicy Tempeh Chips,Snacks
+Veggie Crisps Original,Snacks
+Traditional Beef Jerky,Snacks
+Grass Fed Beef Stick,Snacks
+Grass Fed Spicy Beef stick,Snacks
+Fudge Brownie Cookie Bites,Snacks
+Jalapeno Lime Roasted Fava Beans,Snacks
+Zesty Cheddar Roasted Fava Beans,Snacks
+Barbecue Crunchy Little Lentils,Snacks
+Original Wild Salmon Jerky,Snacks
+Mango Slices,Snacks
+Coconut Pecan Clusters,Snacks
+Sea Salt Macadamias,Snacks
+Honey Roasted Almonds,Snacks
+Wholesome Yogi Snack Nut Mix,Snacks
+Original Kiwi Chips,Snacks
+Orange Kiwi Chips,Snacks
+Freeze Dried Blueberries,Snacks
+Macaroons-Matcha Tea,Snacks
+Peanut Butter Bites,Snacks
+Snickerdoodle Cookies,Snacks
+Birthday Cake Cookies,Snacks
+Double Chocolate Shortbread Cookie,Snacks
+Chocolate Snaps,Snacks
+Ginger Snaps,Snacks
+Shortbread Chocolate Chip Cookies,Snacks
+Gluten Free Choco Chip Cookie,Snacks
+Organic Waffle Cookies,Snacks
+Digestive Original,Snacks
+Organic Double Chocolate Cookies,Snacks
+Soft Mini Chocolate Cookies,Snacks
+Organic Dark Chocolate Cherry & Almond Handle Bar,Snacks
+Organic Peanut Caramel Bar,Snacks
+Chocolate Sea Salt Protein Bar,Snacks
+Birthday Cake Bar,Snacks
+Blueberry Protein Bar,Snacks
+Peach Oh My Bears! Gummies,Snacks
+Sour Keys Gummies,Snacks
+Sour Hippo Gummies,Snacks
+Gummy Worms,Snacks
+Sourmelon Bites,Snacks
+Pink Lemonade Dream Gummy,Snacks
+Cornflakes Milk Chocolate Bar,Snacks
+Dark Chocolate 50 Pct Bar,Snacks
+Creamy Milk Chocolate Bar,Snacks
+Organic Dark Brown Butter,Snacks
+Whole Almond Dark Chocolate Bar,Snacks
+Organic Salty Dark Chocolate Bar,Snacks
+Organic 85% Dark Chocolate Coconut Cups,Snacks
+Organic Mini Milk Chocolate Peanut Butter Cups,Snacks
+Chocolate Brownie,Snacks
+Peanut Butter Bar,Snacks
+Chocolate Chip Bar,Snacks
+Chocolate Mint Food Bar,Snacks
+Sour Blast Buddies,Snacks
+Candy Gummy Bear Fruity,Snacks
+Wintergreen Gum,Snacks
+Cool Mint Gum,Snacks
+Pomegranate Mint,Snacks
+Plant Based Sour Gummies,Snacks
+Prune Nectar,Groceries
+Apple & Mango Juice,Groceries
+Pineapple Juice,Groceries
+Pure Strawberry Juice,Groceries
+Pure Pomegranate Juice,Groceries
+Large Vegan Caesar Mix,Groceries
+"2 In 1 Shampoo and Conditioner, Red Zone Collection",Personal Care
+2-in-1 Anti-Dandruff Fortifying Shampoo and Conditioner,Personal Care
+Almond and Shea Butter Hair Mask,Personal Care
+Anti-Dandruff Conditioner,Personal Care
+Argan Oil Conditioner,Personal Care
+Light and Breezy Fresh Dry Shampoo,Personal Care
+"Body Envy Conditioner, Body Envy",Personal Care
+Jamaican Black Castor Oil,Personal Care
+Nourishing Argan Oil of Morocco Shampoo,Personal Care
+Shampoo for Colored Hair,Personal Care
+Coconut Milk Moisturizing Shampoo,Personal Care
+Classic Dandruff Shampoo,Personal Care
+XXL volume dry shampoo,Personal Care
+Fresh Water hydrating shampoo,Personal Care
+Cotton swabs,Personal Care
+Original Soap Bars,Personal Care
+Unscented Epsom Salt,Personal Care
+Soap Bars with Shea Butter,Personal Care
+Aloe Scented Body Wash,Personal Care
+Lavender Scented Body Wash,Personal Care
+Almond and Meringue Scented Foam Bath,Personal Care
+Moisturizing Cream,Personal Care
+coconut Milk Moisturizing Body Wash,Personal Care
+Whitening Toothpaste for Sensitive Teeth,Personal Care
+antiseptic mouthwash,Personal Care
+Overnight triple mint fresh denture cleaner,Personal Care
+Fresh Mint Toothpaste for Sensitive Teeth,Personal Care
+2-Ply Bathroom Tissue,Household
+Paper Towels,Household
+facial tissues,Household
+White Facial Tissue,Household
+Bathroom Tissue,Household
+"Bleach, Concentrated Formula",Household
+Aluminum Foil,Household
+3ply Bathroom Tissue,Household
+Orange Scented Liquid Dish Soap,Household
+Parchment Paper,Household
+Large Freezer Bags,Household
+Laundry Detergent Pods,Household
+Lemon Scented Dish Soap,Household
+Kitchen Garbage Bags,Household
+1-ply napkins,Household
+Medium Freezer Bags,Household
+Jumbo Bathroom Tissue,Household
+Lavender Scented Liquid Dish Soap,Household
+Liquid Dish Soap,Household
+Apple Scented Dishwashing Liquid Detergent,Household
+Tall Kitchen Garbage Bags,Household
+Beet 2 Ibs,Groceries
+Broccoli Crowns,Groceries
+Canadian Swiss Slc,Groceries
+Chick- Thigh Bnlssl,Groceries
+Coriander/Cilantro,Groceries
+Cucumber Eng Reg,Groceries
+Eggplant Blkbel,Groceries
+Fig Dried 200Gr,Snacks
+Grape Greenseedl Ess,Groceries
+Mushroom Coffee,Groceries
+Onion Red 21B,Groceries
+Paper Bag W/ Handle,Other
+Pepper Jalapeno,Groceries
+ Bell Pepper Orange,Groceries
+"Pita Wheat 10""",Groceries
+Pita Wheat 8,Groceries
+Pita Wheat10°,Groceries
+Plum Black Reg,Groceries
+Potato Yellow Silbs,Groceries
+Romaine Hearts,Groceries
+Squash Zucchinireg,Groceries
+Swiss Farmer Bread,Groceries
+Tomato Vine Ripe,Groceries
+Laundry pods,Household
+LUNC. NAPKIN,Other
+BALLOONS,Other
+SCISSORS,Other
+FOOD CONTAINER,Other
+MARKER,Other
+BRISTOL BOARD,Other
+BATH MAT,Other
+CARROT 3lb,Produce
+ORG Strawberries,Produce
+FB Spicy Hummus,Groceries
+BROCCOLI Crowns,Produce
+White Baguette,Groceries
+Fig dried 200gr,Snacks
+Paper Bag W/ Handle,Other
+W's wireless bra,Clothes
+Paper Bag/Sac Papier,Other
+CRACKERS SEA SALT,Snacks
+BEANS PINTO OG,Groceries
+EGGS OMEGA 3 FREE RUN,Dairy
+BANANA OG,Produce
+CHIPS CORN TORTILLA F,Snacks
+HUMMUS JALAPENO CORIA,Groceries
+SPRINKLES RAINBOW NON,Other
+HOT BAR HB,Other
+GRANOLA CHUNKY FLAXSE,Snacks
+EGGPLANT Regular,Dairy
+MELON Honeydew Reg,Produce
+CUCUMBER Eng Reg,Produce
+SPINACH Bunch,Produce
+"Pita Wheat 8""",Groceries
+DEPT Produce,Produce
+Mush Brown Whol 227,Produce
+ORANGE Blood,Produce
+Apple Royal Gala,Produce
+TOMATO Cocktail,Produce
+CHEEKY PEAR,Produce
+Cucumber Mini PKG,Produce
+Eggs Omega 3 Free Run,Dairy
+PASTA PENNE SEMOLINA,Groceries
+COTTAGE CHEESE 2PCT,Dairy
+SOUR CREAM 14PCT,Dairy
+BREAD SPROUTED THE BI,Groceries
+PEANUT BUTTER CREAMY,Dairy
+APPLE HONEYCRISP CV,Produce
+ORANGE NAVEL SUPER SWEET OG,Produce
+YOGURT GREEK PLAIN OP,Dairy
+CLEANER ALL PURPOSE F,Household
+CHIPS TORTILLA CORN T,Snacks
+SMOOTHIE OAT IMMUNO 1,Dairy
+Sourdough Bread,Groceries
+WALNUT HALVES PIECES OG,Snacks
+CASHEWS DRY RST SEA SALT OG,Snacks
+LIME REG CV,Produce
+AVOCADO HASS MED CV,Produce
+Cantaloupe X large,Produce
+TOMATO Vine Ripe,Produce
+POTATO Yellow Loos,Produce
+ONION Cello 3LB,Produce
+"PUMPKIN SEEDS, HULLED",Snacks
+ALMONDS DRY ROASTED &,Snacks
+ORGANIC TRI COLOUR QUINOA,Groceries
+GUMMI BUNNIES,Snacks
+LRG BAG CHRG,Other
+CRACKERS MULTIGRAIN,Snacks
+BANANA CV,Produce
+POTATO YELLOW BAG 3LB,Produce
+BEANS GARBANZO OG,Groceries
+AVOCADO HASS MED CV,Produce
+Mexico,Coffee
+MILK SKIM,Dairy
+PARSLEY ITALIAN BUNCH,Produce
+MUSHROOMS WHITE 227G,Produce
+CHOCOLATE Hazelnut,Snacks
+FB Chocolate Lovers,Snacks
+CEDAR OLIVE,Groceries
+GREEN CABBAGE,Produce
+DEPT Produce,Produce
+LAMB KEEMA PER LB,Meat
+VEAL KEEMA LEAN GROUND P,Meat
+CHICKEN THIGH BONELESS P,Meat
+VEAL B/L EYE OF ROUND P,Meat
+ONION YELLOW 5LB PER BAG,Produce
+POTATOES LOOSE YELLOW PE,Produce
+PEPPER GREEN PER LB,Produce
+TORTILLAS WHITE OG,Groceries
+MAGAZINE ECONOMIST,Books/Magazine
+ORANGE Blood,Produce
+Apple Royal Gala,Produce
+SPROUT Brussel,Produce
+French's Ketchup,Groceries
+CrustiniBurger Buns,Groceries
+HEMP SEED NUTS,Groceries
+YEAST NUTRITIONAL T66,Groceries
+YOGURT GREEK VANILLA,Dairy
+HOT BAR HB,Other
+BERRY BLUEBERRY PINT,Produce
+JUICE SHOTS FARMA C P,Drinks
+JUICE FARMA C OG,Drinks
+CREAM CLEAN CLARIFYIN,Personal Care
+CARD THANK YOU,Other
+PAPER TOWELS 100PCT R,Household
+BAG STORAGE DOUBLE ZI,Household
+AVOCADO HASS MED CV,Produce
+TEA ELDERBERRY ECHINA,Groceries
+TEA ECHINACEA PLUS OG,Groceries
+CASHEWS DRY RST SEA SALT OG,Snacks
+ALMONDS OG,Snacks
+PUMPKIN SEEDS OG,Snacks
+BRIE PETIT,Groceries
+BAGELS SPROUTED SUNFL,Groceries
+KOMBUCHA GINGER TURME,Drinks
+CREAM CHEESE,Dairy
+COOKIE CHOCOLATE CHUN,Snacks
+TEAM MEMBER COFFEE TE,Coffee
+FACIAL TISSUE FLAT BO,Household
+SALT KOSHER,Groceries
+GRAPE GreenSeedless,Produce
+Romaine Hearts,Produce
+Eggplant Blkbell PK,Produce
+PEPPER Orange Bell,Produce
+TOMATO Vine Ripe,Produce
+PLUM Black Reg,Produce
+CORIANDER/CILANTRO,Produce
+Canadian Swiss Slc,Dairy
+PORK SCHNITZEL,Meat
+PORK SCHNITZEL,Meat
+"Pita Wheat10""",Groceries
+Swiss Farmer bread,Groceries
+TOMATO Vine Ripe,Produce
+Paper Bag w/ Handle,Other
+MUSHROOM Coffee,Produce
+BROCCOLI Crowns,Produce
+CUCUMBER Eng Reg,Produce
+PEPPER Jalapeno,Produce
+Onion Red 21b,Produce
+POTATO Yellow 5lbs,Produce
+BEET 2 lbs,Produce
+Apple Honey Crisp,Produce
+SQUASH ZucchiniReg,Produce
+CHICK- Thigh BnlsSL,Meat
+KRAFT BAGS,Other
+PANASONIC AAA PL INCL. ECO,Other
+BALLOONS,Other
+SPONGE SCRUBBERS,Household
+NN CHIPS,Snacks
+LARGE EGGS,Dairy
+BEATRICE 2% MILK,Dairy
+CAULIFLOWER,Produce
+NNI PEPPERS 2.5,Produce
+PTO WHT/RST 20LB,Produce
+PC BABY SPINACH,Produce
+BERRY RASPBERRY RED 6,Produce
+BERRY STRAWBERRY 160Z,Produce
+TOMATO ON THE VINE CV,Produce
+CRACKERS SEA SALT,Snacks
+PEPPER JALAPENO GREEN OG,Produce
+PEPPER SERRANO OG,Produce
+BEANS GARBANZO OG,Groceries

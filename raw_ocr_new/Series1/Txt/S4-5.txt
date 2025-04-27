@@ -1,0 +1,59 @@
+: FARM BOY ST CLAIR
+-
+81 St Clair Ave East
+Toronto, Ontario
+: 81 St Clair Ave East
+: ST CLAIR
+: Toronto,
+: Ontario
+: FARM BOY
+: FARM BOY ST CLAIR
+-
+81 St Clair Ave East
+Toronto, Ontario
+: FARM BOY
+Visa: $11.50
+Date
+:: 02-23-2025
+: Feb 23 2025
+: 2/23/2025
+Inv#:: 00240758
+H.S.T.: 84179 7046 RT0001
+Net Sales: $10.98
+TOTAL SALES: $11.50
+SUB TOTAL: $11.50
+HST [$3.99]: $0.52
+Amount
+:: $11.50
+: FARM BOY ST CLAIR
+-
+81 St Clair Ave East
+Toronto, Ontario
+: FARM BOY
+: FARM BOY
+Tel:: (416) - 963 8949
+: 1-833-788-3401
+: www.farmboy.ca
+Your Store Manager is:: Philip Jones Jr.
+Trs# :: 242360
+Balance: $0.00
+New customer balance: $0.00
+Item count: 2
+Trans#: 242360
+Card
+:: ***********7246 [5490]
+Card Type :: VI (Visa)
+Trans Type :: PURCHASE
+Card Entry
+:: RF(M)
+Auth #
+:: 06210N
+Sequence #
+:: 001886399
+Trace ID
+:: 305054849409738
+Time: 18:35:40
+GF
+=: GLUTEN FREE Items
+-HST=: 13%
+*HST=: 13% Prep Food

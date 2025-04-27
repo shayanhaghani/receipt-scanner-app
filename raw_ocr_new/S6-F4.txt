@@ -1,0 +1,35 @@
+: Leaside LEA
+416-484-0090
+1860 Bayview Ave
+: 1860 Bayview Ave
+: Leaside LEA
+: 1860 Bayview Ave
+: WHOLE
+FOODS
+D
+MARKET
+M/C: $1.99
+Amount: CAD$1.99
+Employee Discount 20.0%: $0.50
+Tran. #:: 22032
+TAX: 864826995
+TAX: 0.00
+Balance to pay: $1.99
+Balance to pay: $1.99
+: Leaside LEA
+416-484-0090
+1860 Bayview Ave
+: Leaside LEA
+: WHOLE
+FOODS
+D
+MARKET
+: 416-484-0090
+TAX IND: N
+RATE: 0.0%
+GROSS: 1.99
+No. items: 1
+Type:: Purchase
+Acct:: MasterCard
+Card #:: XXXXXXXXXXXX2340
+ITEM: BEANS GARBANZO OG | PRICE: $2.49 | EXPENSE_ROW: BEANS GARBANZO OG $2.49 N

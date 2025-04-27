@@ -1,0 +1,28 @@
+: Iqbal Foods Thorncliffe
+100 Thorncliffe Park Dr.
+East York Ontario M4H 1L9
+: 100 Thorncliffe Park Dr.
+: East York
+: Ontario
+: M4H 1L9
+: Iqbal Foods Thorncliffe
+: 100 Thorncliffe Park Dr.
+East York Ontario M4H 1L9
+Account #:: 490002004787
+Credit Card Tendered: $120.69
+Date:: 2025-03-23
+Transaction #:: 214956
+Sub Total: $120.69
+Total: $120.69
+: Iqbal Foods Thorncliffe
+100 Thorncliffe Park Dr.
+East York Ontario M4H 1L9
+: Iqbal Foods Thorncliffe
+Telephone:: 416-467-0177
+: www.IqbalFoods.ca
+Time:: 12: 58 PM
+Cashier:: 51
+Register #:: 4
+Card:: 544690******2340
+Auth:: 05310Z
+Change Due: $0.00

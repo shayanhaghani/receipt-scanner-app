@@ -1,0 +1,46 @@
+: Yorkville YRK
+416-944-0500
+87 Avenue Road
+: 87 Avenue Road
+: Yorkville
+: Yorkville YRK
+416-944-0500
+87 Avenue Road
+: WHOLE
+FOODS
+R
+MARKET
+VISA: $5.06
+Amount: CAD$5.06
+Employee Discount 20.0%: -$1.27
+DATE: 03-04-25
+: 04/03/2025
+Tran. #:: 18760
+TRANS.: 93132
+TAX: 894696764
+GROSS: 5.06
+TAX: 0.00
+Balance to pay: $5.06
+Balance to pay: $5.06
+: Yorkville YRK
+416-944-0500
+87 Avenue Road
+: WHOLE
+FOODS
+R
+MARKET
+: 416-944-0500
+: http: //www.wfm.com/CANfeedback
+Employee Discount: 20.0%
+TAX IND: N
+RATE: 0.0%
+No. items: 1
+Type:: Purchase
+Acct:: Visa
+Card #:: XXXXXXXXXXXX6104
+Reference #:: 0016210720 H
+Auth. #:: 00735N
+STORE: 10168
+TILL: 961
+OP NO.: 19801461
+TIME: 14: 10

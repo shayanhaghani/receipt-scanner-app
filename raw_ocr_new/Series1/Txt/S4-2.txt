@@ -1,0 +1,34 @@
+: UNIQLO Toronto Eaton Centre
+220 Yonge St, Unit C301
+Toronto, ON M5B 2L7
+: 220 Yonge St, Unit C301
+: Toronto,
+: ON
+: M5B 2L7
+: UNIQLO Toronto Eaton
+: 220 Yonge St, Unit C301
+Toronto, ON M5B 2L7
+: UNI
+QLO
+Credit / Debit Card / Contactless
+VISA: $129.73
+Customer no.: *********9424
+: 2025-04-06
+Receipt no.: 0002-2025-04-06-35-0191
+GST/HST#: 815579586RT0001
+GST/HST#: 815579586RT0001
+Subtotal: $114.80
+NET Sales: $114.80
+H 13.000% of $114.80: $14.93
+Sales tax total: $14.93
+TOTAL: $129.73
+: UNIQLO Toronto Eaton Centre
+220 Yonge St, Unit C301
+Toronto, ON M5B 2L7
+: UNIQLO Toronto Eaton
+: UNI
+QLO
+: WWW.UNIQLO.COM
+Units sold: 4
+Payment Method: Credit / Debit Card / Contactless $129.73
+VISA

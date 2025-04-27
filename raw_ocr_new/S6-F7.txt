@@ -1,0 +1,37 @@
+: Leaside LEA
+416-484-0090
+1860 Bayview Ave
+: 1860 Bayview Ave
+: Leaside LEA
+: 1860 Bayview Ave
+: WHOLE
+FOODS
+R
+MARKET
+M/C: $11.15
+Amount: CAD$11.15
+Employee Discount 20.0%: $2.73
+: 04/17/2025
+Tran. #:: 5496
+TAX: 864826995
+Balance to pay: $11.15
+Balance to pay: $11.15
+: Leaside LEA
+416-484-0090
+1860 Bayview Ave
+: Leaside LEA
+: WHOLE
+FOODS
+R
+MARKET
+: 416-484-0090
+Employee Discount: 20.0%
+No. items: 3
+Type:: Purchase
+Acct:: Master Card
+Card #:: XXXXXXXXXXXX2340
+Reference #:: 0015290190 H
+Auth. #:: 07611Z
+ITEM: EGGS OMEGA 3 FREE RUN | PRICE: $6.99 | EXPENSE_ROW: EGGS OMEGA 3 FREE RUN $6.99 N
+ITEM: CHOCOLATE CHIP BAR | PRICE: $1.99 | EXPENSE_ROW: CHOCOLATE CHIP BAR $1.99 H
+ITEM: TOMATO TINNED | PRICE: $4.69 | EXPENSE_ROW: TOMATO TINNED $4.69 N

@@ -1,0 +1,30 @@
+: Bulk Barn # 636
+91 Laird Drive
+Toronto, Ont.
+: 91 Laird Drive
+: Toronto,
+: Ont.
+: Bulk Barn
+: 91 Laird Drive
+Toronto, Ont.
+: BulkBarn
+VISA: $19.91
+Total Tendered:: $19.91
+Savings:: $3.64
+Date:: 04/11/2025
+Transaction:: 63611763222
+HST#: HST# 100689256-RT0001
+Sub-Total:: $18.65
+HST: $1.26
+Total Amount:: $19.91
+: Bulk Barn # 636
+91 Laird Drive
+Toronto, Ont.
+: Bulk Barn
+: BulkBarn
+: (416) 422-2900
+: WWW.BULKBARN.CA
+Lane:: 002
+Cashier:: 106
+Time:: 14: 01
+Items Sold:: 5

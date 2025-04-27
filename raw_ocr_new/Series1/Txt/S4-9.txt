@@ -1,0 +1,32 @@
+: Leaside LEA
+416-484-0090
+1860 Bayview Ave
+: 1860 Bayview Ave
+: 1860 Bayview Ave
+: WHOLE
+FOODS
+R
+MARKET
+Amount: CAD$4.24
+Employee Discount 20.0%: -$4.11
+Manu Value Coupon: $12.99
+Tran. #:: 28093
+TAX: 864826995
+Balance to pay: $17.23
+Balance to pay: $17.23
+: Leaside LEA
+416-484-0090
+1860 Bayview Ave
+: WHOLE
+FOODS
+R
+MARKET
+: 416-484-0090
+Employee Discount: 20.0%
+No. items: 5
+M/C: $4.24
+Type:: Purchase
+Acct:: MasterCard
+Card #:: XXXXXXXXXXXX2340
+Reference #:: 0012171130 H
+Auth. #:: 06516Z

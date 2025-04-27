@@ -1,0 +1,45 @@
+: Toronto Eaton Centre
+220 Yonge St
+Toronto, ON M5B 2H1
+CAN
+: Toronto Eaton Centre
+220 Yonge St
+: Toronto,
+: ON
+: M5B 2H1
+: CAN
+: Toronto Eaton Centre
+220 Yonge St
+Toronto, ON M5B 2H1
+CAN
+Customer:: Shabnam Mohamadi
+: ARITZIA
+Visa: 45.20
+Customer ID:: 18935768
+Date:: 3/21/25
+Trans ID:: 895328
+GST: #817750078 RT0001
+QST: #1219319068 TQ0001
+GST: #817750078 RT0001
+Customer:: Shabnam Mohamadi
+Subtotal: 40.00
+GST/HST: 5.20
+Total: 45.20
+: Toronto Eaton Centre
+220 Yonge St
+Toronto, ON M5B 2H1
+CAN
+: ARITZIA
+: 416-204-1318
+Store:: 1304
+Time:: 6: 53 PM
+Register: 1
+Cashier:: 145774
+Associate:: 1000
+Colour:: WASHED DK NT NVY/ WH. Size
+Auth #:: 02786N
+Transaction
+Type:: Sale
+Auth Time:: 6: 54 p.m.
+STORE: # 1304
+REG #: 1
