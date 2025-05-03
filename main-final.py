@@ -215,6 +215,49 @@ def main():
                     st.subheader("📋 Final Items Table")
                     st.dataframe(df, use_container_width=True)
 
+                
+                    # ——— INSERT EDITABLE CATEGORY CORRECTION BLOCK HERE ———
+
+                    # محاسبه هش متن رسید برای link کردن اصلاحات
+                    receipt_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
+                    # آماده‌سازی گزینه‌ها از دسته‌بندی‌های فعلی
+                    CATEGORY_OPTIONS = [
+                        "Groceries","Produce","Snacks","Drinks","Dairy",
+                        "Books/Magazine","Coffee","Clothes","Personal Care",
+                        "Household","Baby","Pet","Transportation","Healthcare",
+                        "Dining out","Entertainment","Gift & Flowers","Alcohol Drinks"
+                    ]
+
+                    edited = st.data_editor(
+                        df,
+                        column_config={
+                            "Category": st.column_config.SelectboxColumn(
+                                "Category",
+                                options=CATEGORY_OPTIONS
+                            )
+                        },
+                        hide_index=True,
+                        use_container_width=True
+                    )
+
+                    corrections = edited[edited["Category"] != df["Category"]]
+                    if not corrections.empty:
+                        st.markdown("### اصلاحات دسته‌بندی:")
+                        st.dataframe(corrections, use_container_width=True)
+
+                        if st.button("ذخیرهٔ اصلاحات"):
+                            corrections = corrections.copy()
+                            corrections["receipt_id"] = receipt_hash
+                            file_path = "Corrected_training_data.csv"
+                            if os.path.exists(file_path):
+                                existing = pd.read_csv(file_path)
+                                combined = pd.concat([existing, corrections], ignore_index=True)
+                            else:
+                                combined = corrections
+                            combined.to_csv(file_path, index=False, encoding="utf-8")
+                            st.success(f"{len(corrections)} اصلاح ذخیره شد.")
+    
+
                     # save or show duplicate
                     receipt_id = save_receipt(conn, text, path, item_dict, entities)
 
