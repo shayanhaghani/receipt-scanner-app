@@ -2,13 +2,16 @@ import os
 import logging
 import hashlib
 from collections import defaultdict
-
+from pathlib import Path
 import streamlit as st
 import pandas as pd
 import spacy
 import boto3
 import sqlite3
 from botocore.exceptions import BotoCoreError, ClientError
+
+BASE_DIR = Path(__file__).resolve().parent
+logger = logging.getLogger(__name__)
 
 # -------------------- Configuration --------------------
 DB_PATH = os.getenv("DB_PATH", "receipts.db")
@@ -65,12 +68,16 @@ def init_db(path: str = DB_PATH) -> sqlite3.Connection:
 @st.cache_resource
 def load_models(
     ner_path: str = "receipt_ner_model",
-    cls_path: str = "product_classifier/training/model-best"
+    cls_path: Path | str = None
 ):
-    """Load spaCy NER and classification models."""
+    """Load spaCy NER and classification models dynamically."""
+    # اگر مسیر مدل طبقه‌بندی فرستاده نشده، مسیر پیش‌فرض را تنظیم می‌کنیم
+    if cls_path is None:
+        cls_path = BASE_DIR / "product_classifier" / "training" / "model-best"
     try:
-        ner = spacy.load(ner_path)
-        cls = spacy.load(cls_path)
+        # spaCy.load نیاز به رشته دارد
+        ner = spacy.load(str(ner_path))
+        cls = spacy.load(str(cls_path))
         return ner, cls
     except Exception:
         logger.exception("Failed to load models")

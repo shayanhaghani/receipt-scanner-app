@@ -18,24 +18,24 @@
   },
   "labels":{
     "textcat":[
+      "Transportation",
       "Groceries",
-      "Produce",
-      "Snacks",
-      "Drinks",
-      "Dairy",
-      "Books/Magazine",
-      "Coffee",
-      "Clothes",
+      "Healthcare",
       "Personal Care",
+      "Coffee",
+      "Dining out",
+      "Alcohol Drinks",
       "Household",
       "Baby",
-      "Pet",
-      "Transportation",
-      "Healthcare",
-      "Dining out",
       "Entertainment",
-      "Gift & Flowers",
-      "Alcohol Drinks"
+      "Clothes",
+      "Produce",
+      "Dairy",
+      "Drinks",
+      "Snacks",
+      "Books/Magazine",
+      "Pet",
+      "Gift & Flowers"
     ]
   },
   "pipeline":[
@@ -48,107 +48,107 @@
 
   ],
   "performance":{
-    "cats_score":1.0,
+    "cats_score":0.2555555556,
     "cats_score_desc":"macro F",
-    "cats_micro_p":1.0,
-    "cats_micro_r":1.0,
-    "cats_micro_f":1.0,
-    "cats_macro_p":1.0,
-    "cats_macro_r":1.0,
-    "cats_macro_f":1.0,
-    "cats_macro_auc":1.0,
+    "cats_micro_p":0.3333333333,
+    "cats_micro_r":0.3333333333,
+    "cats_micro_f":0.3333333333,
+    "cats_macro_p":0.2592592593,
+    "cats_macro_r":0.287037037,
+    "cats_macro_f":0.2555555556,
+    "cats_macro_auc":0.6884096816,
     "cats_f_per_type":{
+      "Transportation":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
       "Groceries":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
       },
-      "Produce":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
+      "Healthcare":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
       },
-      "Snacks":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "Drinks":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "Dairy":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "Books/Magazine":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
+      "Personal Care":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
       },
       "Coffee":{
         "p":1.0,
         "r":1.0,
         "f":1.0
       },
-      "Clothes":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
+      "Dining out":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
       },
-      "Personal Care":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
+      "Alcohol Drinks":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
       },
       "Household":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
       },
       "Baby":{
         "p":1.0,
         "r":1.0,
         "f":1.0
       },
-      "Pet":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "Transportation":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "Healthcare":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "Dining out":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
       "Entertainment":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "Clothes":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "Produce":{
+        "p":0.1666666667,
+        "r":0.6666666667,
+        "f":0.2666666667
+      },
+      "Dairy":{
+        "p":1.0,
+        "r":0.5,
+        "f":0.6666666667
+      },
+      "Drinks":{
         "p":1.0,
         "r":1.0,
         "f":1.0
+      },
+      "Snacks":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "Books/Magazine":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "Pet":{
+        "p":0.5,
+        "r":1.0,
+        "f":0.6666666667
       },
       "Gift & Flowers":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
-      },
-      "Alcohol Drinks":{
-        "p":1.0,
-        "r":1.0,
-        "f":1.0
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
       }
     },
-    "textcat_loss":0.0098937763
+    "textcat_loss":0.0353464989
   }
 }
