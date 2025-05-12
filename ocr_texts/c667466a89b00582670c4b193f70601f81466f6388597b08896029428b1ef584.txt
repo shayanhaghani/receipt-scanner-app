@@ -1,0 +1,57 @@
+: FARM BOY ST CLAIR
+-
+81 St Clair Ave East
+Toronto, Ontario
+: 81 St Clair Ave East
+: ST CLAIR
+: Toronto,
+: Ontario
+: FARM BOY
+: FARM BOY ST CLAIR
+-
+81 St Clair Ave East
+Toronto, Ontario
+: FARM BOY
+Visa: $28.31
+Temporary markdown: $7.30
+SAVING GRAND TOTAL: $7.30
+: 4/3/2025
+Inv#:: 00268292
+H.S.T.#: 84179 7046 RT0001
+Net Sales: $28.31
+TOTAL SALES: $28.31
+SUB TOTAL: $28.31
+: FARM BOY ST CLAIR
+-
+81 St Clair Ave East
+Toronto, Ontario
+: FARM BOY
+: FARM BOY
+Tel:: (416) - 963 8949
+Your Store Manager is:: Philip Jones Jr.
+Trs#: 270078
+Balance: $0.00
+New customer balance: $0.00
+Item count: 11
+ITEM: MELON Honeydew Reg | PRICE: $3.99 | QUANTITY: 1 | UNIT_PRICE: (2/$3.00) | EXPENSE_ROW: MELON Honeydew Reg $3.99
+Markdown: $1.00
+1 @ 2/ $3.00 (2/$3.00)
+ITEM: CUCUMBER Eng Reg | PRICE: $1.50 | EXPENSE_ROW: CUCUMBER Eng Reg $1.50
+ITEM: SPINACH Bunch | PRICE: $2.99 | EXPENSE_ROW: SPINACH Bunch $2.99
+ITEM: Pita Wheat 8" | PRICE: $1.99 | EXPENSE_ROW: Pita Wheat 8" $1.99
+ITEM: DEPT Produce 2.5 | PRICE: $3.00 | QUANTITY: 1 | UNIT_PRICE: $5.00 | EXPENSE_ROW: DEPT Produce 2.5 $3.00
+1 @ 2/ $5.00
+ITEM: Mush Brown Whol 227 | PRICE: $2.50 | QUANTITY: 0.590 kg | UNIT_PRICE: $4.39/kg | EXPENSE_ROW: Mush Brown Whol 227 $2.50
+Markdown: $0.49
+0.590 kg @ $4.39/kg
+ITEM: ORANGE Blood | PRICE: $2.59 | QUANTITY: 0.375 kg | UNIT_PRICE: $6.59/kg | EXPENSE_ROW: ORANGE Blood $2.59
+Markdown: $1.30
+0.375 kg @ $6.59/kg
+ITEM: Apple Royal Gala | PRICE: $2.47 | EXPENSE_ROW: Apple Royal Gala $2.47
+ITEM: TOMATO Cocktail | PRICE: $2.44 | QUANTITY: 0.730 kg | UNIT_PRICE: $3.90/kg | EXPENSE_ROW: TOMATO Cocktail $2.44
+Markdown: $1.55
+0.730 kg @ $3.90/kg
+ITEM: CHEEKY PEAR | PRICE: $2.85 | EXPENSE_ROW: CHEEKY PEAR $2.85
+Markdown: $1.96
+ITEM: Cucumber Mini PKG | PRICE: $1.99 | UNIT_PRICE: $1.00 | EXPENSE_ROW: Cucumber Mini PKG $1.99
+Markdown: $1.00

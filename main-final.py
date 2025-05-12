@@ -1,137 +1,267 @@
 import os
-import logging
 import hashlib
 from pathlib import Path
 
 import streamlit as st
+# ─── Shim برای st.experimental_rerun ──────────────────────────────────
+# در نسخه‌های جدید Streamlit این تابع حذف شده، پس اگر در دسترس نبود، با RerunException جایگزینش می‌کنیم.
+try:
+    _ = st.experimental_rerun
+except AttributeError:
+    from streamlit.runtime.scriptrunner.script_runner import RerunException
+
+    def experimental_rerun():
+        """Re-raise a RerunException to force Streamlit to rerun the script."""
+        raise RerunException("Rerun requested")
+
+    st.experimental_rerun = experimental_rerun
+# ────────────────────────────────────────────────────────────────────────
+import boto3
 import pandas as pd
 
-from ReceiptParser import ReceiptParser
-from product_classifier import ProductClassifier
-from db_handler import DBHandler
-from ui_components import render_items_table, render_summary
 from database import engine
 from models import Base
-
-# Ensure tables exist
-Base.metadata.create_all(bind=engine)
-
-# -------------------- Configuration --------------------
-BASE_DIR = Path(__file__).resolve().parent
-OUTPUT_DIR = os.getenv("OUTPUT_DIR", str(BASE_DIR / "raw_ocr_new"))
-
-# -------------------- Logging Setup --------------------
-logging.basicConfig(
-    format="%(asctime)s %(levelname)s %(message)s", level=logging.INFO
+from db_handler import DBHandler
+from receipt_parser import ReceiptParser
+from product_classifier import ProductClassifier
+from ui_components import (
+    render_items_table,   # ← این خط را اضافه کنید
+    render_upload,
+    render_summary,
+    render_receipt_history,   
+    render_dashboard,
+    render_profile,
+    render_login,
+    render_logout
 )
-logger = logging.getLogger(__name__)
+
+# ─── پیکربندی ───────────────────────────────────────────────────────────────
+BASE_DIR    = Path(__file__).parent
+OUTPUT_DIR  = BASE_DIR / "ocr_texts"
+DB_PATH     = BASE_DIR / "receipts.db"
+NER_MODEL   = BASE_DIR / "receipt_ner_model"
+CLS_MODEL   = BASE_DIR / "product_classifier" / "training" / "model-best"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+# ساخت جداول در اولین اجرا
+Base.metadata.create_all(bind=engine)
 
-# -------------------- Core Components --------------------
-parser = ReceiptParser(
-    ner_model_path=BASE_DIR / "receipt_ner_model",
-    cls_model_path=BASE_DIR / "product_classifier" / "training" / "model-best",
-    aws_region=os.getenv("AWS_REGION", "ca-central-1"),
+# ─── نمونه‌سازی ماژول‌ها ───────────────────────────────────────────────────────
+db         = DBHandler()
+parser     = ReceiptParser(
+    ner_model_path=str(NER_MODEL),
+    cls_model_path=str(CLS_MODEL),
+    aws_region="us-east-1"
 )
-classifier = ProductClassifier(
-    model_path=BASE_DIR / "product_classifier" / "training" / "model-best"
-)
-db = DBHandler()
+classifier = ProductClassifier(model_path=CLS_MODEL)
 
-# -------------------- Streamlit UI --------------------
+# ─── اجرای Expense Analysis از Textract ─────────────────────────────────────────
+def call_expense_analyzer(image_bytes: bytes) -> dict:
+    client = boto3.client('textract')
+    # در اینجا از متد analyze_expense استفاده می‌کنیم
+    resp = client.analyze_expense(Document={'Bytes': image_bytes})
+    return resp
+
+def parse_expense_response(resp: dict) -> dict:
+    data = {
+        "store_name": None,
+        "store_address": None,
+        "date": None,
+        "phone": None,
+        "items": {}
+    }
+    docs = resp.get("ExpenseDocuments", [])
+    if not docs:
+        return data
+    doc = docs[0]
+    # استخراج فیلدهای Summary
+    for fld in doc.get("SummaryFields", []):
+        t = fld.get("Type", {}).get("Text", "")
+        v = fld.get("ValueDetection", {}).get("Text", "")
+        if t == "VENDOR_NAME":
+            data["store_name"] = v
+        elif t == "VENDOR_ADDRESS":
+            data["store_address"] = v
+        elif t == "INVOICE_RECEIPT_DATE":
+            data["date"] = v
+        elif t == "VENDOR_PHONE":
+            data["phone"] = v
+    # استخراج آیتم‌ها
+    for grp in doc.get("LineItemGroups", []):
+        for line in grp.get("LineItems", []):
+            name = price = count = None
+            for lf in line.get("LineItemExpenseFields", []):
+                tp = lf.get("Type", {}).get("Text", "")
+                va = lf.get("ValueDetection", {}).get("Text", "")
+                if tp == "ITEM":
+                    name = va
+                elif tp == "PRICE":
+                    try: price = float(va.replace("$",""))
+                    except: price = None
+                elif tp == "QUANTITY":
+                    try: count = int(va)
+                    except: count = 1
+            if name:
+                data["items"][name] = {"price": price, "count": count or 1}
+    return data
+
+def build_items_df(exp_data: dict) -> pd.DataFrame:
+    rows = []
+    for nm, it in exp_data["items"].items():
+        rows.append({
+            "Item": nm,
+            "Price": it["price"],
+            "Quantity": it["count"],
+            "Total": (it["price"] or 0) * it["count"]
+        })
+    return pd.DataFrame(rows)
+
+# ─── صفحات Streamlit ───────────────────────────────────────────────────────────
+def auth_flow():
+    st.title("Welcome to SmartReceipt AI")
+    mode = st.selectbox("Login or Sign Up", ["Login", "Sign Up"])
+    if mode == "Sign Up":
+        u = st.text_input("Username", key="su_user")
+        e = st.text_input("Email", key="su_email")
+        p1 = st.text_input("Password", type="password", key="su_p1")
+        p2 = st.text_input("Confirm Password", type="password", key="su_p2")
+        if st.button("Sign Up"):
+            if not (u and e and p1):
+                st.error("All fields are required.")
+            elif p1 != p2:
+                st.error("Passwords do not match.")
+            else:
+                uid = db.create_user(u, e, p1)
+                if uid:
+                    st.success("Account created! Please log in.")
+                else:
+                    st.error("Username exists.")
+    else:
+        u = st.text_input("Username", key="li_user")
+        p = st.text_input("Password", type="password", key="li_pw")
+        if st.button("Login"):
+            uid = db.authenticate_user(u, p)
+            if uid:
+                st.session_state.user_id = uid
+                st.session_state.username = u
+                st.experimental_rerun()
+            else:
+                st.error("Invalid credentials.")
+
+def upload_page():
+    st.title("📤 Upload Receipt")
+    img_file = st.file_uploader("Upload Receipt Image", type=["png","jpg","jpeg"])
+    if img_file is None:
+        # هیچ فایلی آپلود نشده؛ منتظر کاربر می‌مانیم
+        return
+
+    # فقط وقتی فایل هست، ادامه بده:
+    try:
+        img_bytes = img_file.read()
+    except Exception as e:
+        st.error(f"خطا در خواندن فایل: {e}")
+        return
+
+    # حالا امن به Textract بفرست
+    try:
+        result = parser.parse(img_bytes)
+    except RuntimeError as e:
+        st.error(str(e))
+        return
+
+    # نمایش تصویر
+    st.image(img_bytes, caption="تصویر آپلود شده", use_container_width=True)
+
+    # یک بار پردازش شده؛ مستقیماً نتیجه را نمایش بده
+    for nm, it in result["items"].items():
+        it["category"] = classifier.predict_category(nm)
+    render_items_table(result["items"])
+    render_summary(
+        total=result.get("total", 0.0),
+        tax=result.get("tax", 0.0),
+        discount=result.get("discount", 0.0)
+    )
+
+    # 2) TEMP: نمایش OCR و تولید CSV مشابه کنسول Textract
+    st.markdown("---")
+    st.subheader("🔍 Temporary Textract Expense Debug")
+    st.text_area("Raw OCR Text", result["text"], height=200)
+
+    # Expense API
+    exp_resp = call_expense_analyzer(img_bytes)
+    exp_data = parse_expense_response(exp_resp)
+
+    # CSV metadata
+    meta_df = pd.DataFrame([{
+        "Store Name": exp_data["store_name"],
+        "Address": exp_data["store_address"],
+        "Date": exp_data["date"],
+        "Phone": exp_data["phone"]
+    }])
+    csv_meta = meta_df.to_csv(index=False).encode("utf-8")
+    st.download_button("Download metadata CSV", csv_meta, "metadata.csv", "text/csv")
+
+    # ── METADATA TABLE DISPLAY START
+    st.subheader("🏷️ Receipt Metadata")
+    st.table(meta_df)
+# ── METADATA TABLE DISPLAY END
+
+    # CSV items
+    items_df = build_items_df(exp_data)
+    st.dataframe(items_df)
+    csv_it = items_df.to_csv(index=False).encode("utf-8")
+    st.download_button("Download items CSV", csv_it, "items.csv", "text/csv")
+
+    # 3) ذخیره به دیتابیس (اختیاری)
+    text_hash = hashlib.sha256(result["text"].encode()).hexdigest()
+    ocr_path  = OUTPUT_DIR / f"{text_hash}.txt"
+    with open(ocr_path, "w", encoding="utf-8") as f:
+        f.write(result["text"])
+
+    db.save_receipt(
+        data=result,
+        ocr_path=str(ocr_path),
+        user_id=st.session_state.user_id,
+        store_name=exp_data["store_name"] or "",
+        store_location=exp_data["store_address"]
+    )
+    st.success("✅ Receipt saved!")
+
+def history_page():
+    st.title("🕒 Receipt History")
+    render_receipt_history(db, st.session_state.user_id)
+
+def dashboard_page():
+    st.title("📊 Dashboard")
+    render_dashboard(db, st.session_state.user_id)
+
+def profile_page():
+    st.title("👤 Profile")
+    render_profile(db, st.session_state.user_id)
+
+def logout():
+    st.session_state.pop("user_id", None)
+    st.session_state.pop("username", None)
+    st.experimental_rerun()
+
 def main():
-    # Must be the first Streamlit command
     st.set_page_config(page_title="SmartReceipt AI", layout="wide")
-
-    # Initialize session state for authentication
     if "user_id" not in st.session_state:
-        st.session_state.user_id = None
-        st.session_state.username = None
-
-    # --- Authentication Forms ---
-    if st.session_state.user_id is None:
-        auth_choice = st.sidebar.selectbox("Login or Sign Up", ["Login", "Sign Up"])
-        if auth_choice == "Sign Up":
-            with st.sidebar.form("signup_form"):
-                new_username = st.text_input("Username")
-                new_email = st.text_input("Email")
-                new_password = st.text_input("Password", type="password")
-                new_password2 = st.text_input("Confirm Password", type="password")
-                signup_submit = st.form_submit_button("Sign Up")
-                if signup_submit:
-                    if not new_username or not new_password:
-                        st.error("Username and password are required.")
-                    elif new_password != new_password2:
-                        st.error("Passwords do not match.")
-                    else:
-                        try:
-                            user_id = db.create_user(new_username, new_email, new_password)
-                            st.session_state.user_id = user_id
-                            st.session_state.username = new_username
-                            st.success("Account created and logged in.")
-                        except Exception as e:
-                            st.error(f"Error creating account: {e}")
-        else:
-            with st.sidebar.form("login_form"):
-                username_input = st.text_input("Username")
-                password_input = st.text_input("Password", type="password")
-                login_submit = st.form_submit_button("Login")
-                if login_submit:
-                    if not username_input or not password_input:
-                        st.error("Username and password are required.")
-                    else:
-                        user_id = db.authenticate_user(username_input, password_input)
-                        if user_id:
-                            st.session_state.user_id = user_id
-                            st.session_state.username = username_input
-                            st.success(f"Welcome, {username_input}!")
-                        else:
-                            st.error("Invalid username or password.")
-    
-    # --- Main App: Receipt Upload ---
-    if st.session_state.user_id is not None:
-        st.title(f"SmartReceipt AI  |  {st.session_state.username}")
-        uploaded = st.file_uploader("Upload Receipt Image", type=["png", "jpg", "jpeg"])
-        if uploaded:
-            image_bytes = uploaded.read()
-            with st.spinner("Processing receipt…"):
-                result = parser.parse(image_bytes)
-
-            # Classify items
-            for name, data in result.get("items", {}).items():
-                data["category"] = classifier.predict_category(name)
-
-            # Display results
-            st.subheader("📄 Raw OCR Text:")
-            st.text(result.get("text", ""))
-            st.subheader("🧠 Recognized Entities:")
-            for text_val, label in result.get("entities", []):
-                st.markdown(f"- **{label}**: {text_val}")
-
-            render_items_table(result.get("items", {}))
-            render_summary(
-                total=result.get("total", 0.0), tax=result.get("tax"), discount=result.get("discount"),
-            )
-
-            # Auto-save
-            text_hash = hashlib.sha256(result.get("text", "").encode()).hexdigest()
-            ocr_filename = f"{text_hash}.txt"
-            ocr_path = os.path.join(OUTPUT_DIR, ocr_filename)
-            with open(ocr_path, "w", encoding="utf-8") as f:
-                f.write(result.get("text", ""))
-
-            store_name = next((t for t, l in result.get("entities", []) if l in ("STORE", "VENDOR", "MERCHANT")), "unknown")
-            store_location = next((t for t, l in result.get("entities", []) if l == "LOCATION"), None)
-
-            receipt_id = db.save_receipt(
-                data=result,
-                ocr_path=ocr_path,
-                username=st.session_state.username,
-                store_name=store_name,
-                store_location=store_location,
-            )
-            st.info(f"Receipt automatically saved with ID: {receipt_id}")
+        auth_flow()
+        return
+    st.sidebar.title(f"👤 {st.session_state.username}")
+    page = st.sidebar.selectbox("Navigate to", ["Upload","History","Dashboard","Profile"])
+    if st.sidebar.button("Logout"):
+        logout()
+        return
+    if page=="Upload":
+        upload_page()
+    elif page=="History":
+        history_page()
+    elif page=="Dashboard":
+        dashboard_page()
+    elif page=="Profile":
+        profile_page()
 
 if __name__ == "__main__":
     main()

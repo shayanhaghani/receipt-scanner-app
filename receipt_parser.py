@@ -1,11 +1,9 @@
 import hashlib
 from collections import defaultdict
 from pathlib import Path
-
-import boto3
 import spacy
-from botocore.exceptions import BotoCoreError, ClientError
-
+import boto3
+from botocore.exceptions import NoCredentialsError, ClientError
 
 class ReceiptParser:
     """
@@ -19,7 +17,7 @@ class ReceiptParser:
         self,
         ner_model_path: str = "receipt_ner_model",
         cls_model_path: str | Path = None,
-        aws_region: str = "ca-central-1"
+        aws_region: str = "us-east-1"
     ):
         # بارگذاری مدل‌های NER و دسته‌بندی
         self.ner_model = spacy.load(str(ner_model_path))
@@ -28,20 +26,36 @@ class ReceiptParser:
             base_dir = Path(__file__).resolve().parent
             cls_model_path = base_dir / "product_classifier" / "training" / "model-best"
         self.cls_model = spacy.load(str(cls_model_path))
-        # مقداردهی Textract client
+        # مقداردهی Textract client با ریجن مشخص
         self.textract = boto3.client("textract", region_name=aws_region)
 
     def analyze_bytes(self, image_bytes: bytes) -> dict:
         """
-        فراخوانی AWS Textract analyze_expense برای OCR
+        فراخوانی AWS Textract analyze_expense برای OCR با اعتبارسنجی اولیه
         """
-        try:
-            return self.textract.analyze_expense(Document={"Bytes": image_bytes})
-        except (BotoCoreError, ClientError) as e:
-            raise RuntimeError("خطا در اتصال به AWS Textract") from e
+        # اعتبارسنجی اولیه ورودی
+        if not isinstance(image_bytes, (bytes, bytearray)) or len(image_bytes) == 0:
+            raise RuntimeError("بایت‌های تصویر نامعتبر است.")
+        # Textract میزان حداکثر 5MB برای تصاویر پشتیبانی می‌کند
+        if len(image_bytes) > 5 * 1024 * 1024:
+            raise RuntimeError("حجم تصویر بیش از 5MB است.")
 
-    @staticmethod
-    def extract_text(response: dict) -> str:
+        try:
+            resp = self.textract.analyze_expense(Document={"Bytes": image_bytes})
+            return resp
+
+        except NoCredentialsError as e:
+            raise RuntimeError("AWS credentials پیدا نشدند. لطفاً ~/.aws/credentials را چک کنید.") from e
+
+        except ClientError as e:
+            code = e.response.get("Error", {}).get("Code", "UnknownError")
+            msg = e.response.get("Error", {}).get("Message", "")
+            raise RuntimeError(f"خطای Textract: {code} — {msg}") from e
+
+        except Exception as e:
+            raise RuntimeError(f"خطا در اتصال به AWS Textract: {e}") from e
+
+    def extract_text(self, response: dict) -> str:
         """
         استخراج متن خام OCR از پاسخ Textract
         """
@@ -85,62 +99,52 @@ class ReceiptParser:
             {item_name: {"price": float, "count": int, "category": str}}
         """
         items = defaultdict(lambda: {"price": 0.0, "count": 0, "category": ""})
-        for i in range(len(entities) - 1):
-            text, label = entities[i]
-            next_text, next_label = entities[i + 1]
-            if label == "ITEM" and next_label == "PRICE":
-                name = text.strip()
+        for val, lab in entities:
+            if lab == "ITEM":
+                current = items[val]
+                current["count"] += 1
+                current["category"] = self.predict_category(val)
+            elif lab == "PRICE":
+                # مقدار عددی را استخراج و به آیتم قبل نسبت می‌دهیم
                 try:
-                    price = float(next_text.replace("$", ""))
+                    price = float(val.replace(',', ''))
                 except ValueError:
                     continue
-                items[name]["price"] += price
-                items[name]["count"] += 1
-                items[name]["category"] = self.predict_category(name)
-        return dict(items)
+                # آخرین آیتم اضافه‌شده
+                last_item = list(items.keys())[-1] if items else None
+                if last_item:
+                    items[last_item]["price"] = price
+        return items
 
     def parse(self, image_bytes: bytes) -> dict:
         """
-        اجرای کل فرایند:
-        1. OCR با Textract
-        2. استخراج متن
-        3. تشخیص موجودیت‌ها
-        4. تجمیع آیتم‌ها
-        5. استخراج فیلدهای کلیدی (TOTAL, TAX, DISCOUNT, DATE)
-
-        خروجی:
-            {
-                "text": str,
-                "entities": list[tuple[str, str]],
-                "items": dict,
-                "total": float,
-                "tax": float,
-                "discount": float,
-                "date": str,
-                "text_hash": str,
-                "textract_response": dict
-            }
+        روش کلی:
+        1. فراخوانی analyze_bytes برای OCR دریافت پاسخ
+        2. extract_text گرفتن متن خام
+        3. extract_entities شناسایی موجودیت‌ها
+        4. aggregate_items تجمیع آیتم‌ها
+        5. محاسبه مجموع و مالیات و تخفیف
         """
         # 1. OCR
         response = self.analyze_bytes(image_bytes)
-        # 2. استخراج متن
+        # 2. استخراج متن خام
         text = self.extract_text(response)
-        # 3. NER
+        # 3. شناسایی موجودیت‌ها
         entities = self.extract_entities(text)
         # 4. تجمیع آیتم‌ها
         items = self.aggregate_items(entities)
 
-        # 5. استخراج فیلدهای کلیدی
+        # محاسبات اضافی: جمع کل، مالیات و تخفیف
         def _find_amount(labels):
             for val, lab in entities:
                 if lab in labels:
                     try:
-                        return float(val.replace("$", ""))
+                        return float(val.replace(',', ''))
                     except ValueError:
-                        return 0.0
+                        continue
             return 0.0
 
-        total = _find_amount(["TOTAL"])
+        total = _find_amount(["TOTAL", "TOTAL_AMOUNT"])
         tax = _find_amount(["TAX", "TAX_AMOUNT"])
         discount = _find_amount(["DISCOUNT", "DISCOUNT_AMOUNT"])
         date = next((val for val, lab in entities if lab == "DATE"), "unknown")
