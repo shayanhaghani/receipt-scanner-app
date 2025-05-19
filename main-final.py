@@ -1,9 +1,18 @@
 import os
 import hashlib
 from pathlib import Path
+from datetime import datetime
+from config import (
+    BASE_DIR,
+    OUTPUT_DIR,
+    DATABASE_URL,   # if you need it in DBHandler
+    NER_MODEL_DIR,
+    CLS_MODEL_DIR,
+    AWS_REGION,
+)
 
 import streamlit as st
-# ─── Shim برای st.experimental_rerun ──────────────────────────────────
+# ─── Shim for st.experimental_rerun ──────────────────────────────────
 # در نسخه‌های جدید Streamlit این تابع حذف شده، پس اگر در دسترس نبود، با RerunException جایگزینش می‌کنیم.
 try:
     _ = st.experimental_rerun
@@ -16,16 +25,19 @@ except AttributeError:
 
     st.experimental_rerun = experimental_rerun
 # ────────────────────────────────────────────────────────────────────────
-import boto3
+from services.textract_service import (
+    call_expense_analyzer,
+    parse_expense_response,
+)
 import pandas as pd
 
 from database import engine
 from models import Base
-from db_handler import DBHandler
+from services.db_handler import DBHandler
 from receipt_parser import ReceiptParser
 from product_classifier import ProductClassifier
 from ui_components import (
-    render_items_table,   # ← این خط را اضافه کنید
+    render_items_table,   
     render_upload,
     render_summary,
     render_receipt_history,   
@@ -35,76 +47,25 @@ from ui_components import (
     render_logout
 )
 
-# ─── پیکربندی ───────────────────────────────────────────────────────────────
-BASE_DIR    = Path(__file__).parent
-OUTPUT_DIR  = BASE_DIR / "ocr_texts"
-DB_PATH     = BASE_DIR / "receipts.db"
-NER_MODEL   = BASE_DIR / "receipt_ner_model"
-CLS_MODEL   = BASE_DIR / "product_classifier" / "training" / "model-best"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
-# ساخت جداول در اولین اجرا
+# create table at startup
 Base.metadata.create_all(bind=engine)
 
-# ─── نمونه‌سازی ماژول‌ها ───────────────────────────────────────────────────────
-db         = DBHandler()
-parser     = ReceiptParser(
-    ner_model_path=str(NER_MODEL),
-    cls_model_path=str(CLS_MODEL),
-    aws_region="us-east-1"
+# Initialize database handler (uses DATABASE_URL from config)
+db = DBHandler()
+
+# Initialize Textract-based parser with model paths and AWS region from config
+parser = ReceiptParser(
+    ner_model_path=str(NER_MODEL_DIR),
+    cls_model_path=str(CLS_MODEL_DIR),
+    aws_region=AWS_REGION,
 )
-classifier = ProductClassifier(model_path=CLS_MODEL)
 
-# ─── اجرای Expense Analysis از Textract ─────────────────────────────────────────
-def call_expense_analyzer(image_bytes: bytes) -> dict:
-    client = boto3.client('textract')
-    # در اینجا از متد analyze_expense استفاده می‌کنیم
-    resp = client.analyze_expense(Document={'Bytes': image_bytes})
-    return resp
-
-def parse_expense_response(resp: dict) -> dict:
-    data = {
-        "store_name": None,
-        "store_address": None,
-        "date": None,
-        "phone": None,
-        "items": {}
-    }
-    docs = resp.get("ExpenseDocuments", [])
-    if not docs:
-        return data
-    doc = docs[0]
-    # استخراج فیلدهای Summary
-    for fld in doc.get("SummaryFields", []):
-        t = fld.get("Type", {}).get("Text", "")
-        v = fld.get("ValueDetection", {}).get("Text", "")
-        if t == "VENDOR_NAME":
-            data["store_name"] = v
-        elif t == "VENDOR_ADDRESS":
-            data["store_address"] = v
-        elif t == "INVOICE_RECEIPT_DATE":
-            data["date"] = v
-        elif t == "VENDOR_PHONE":
-            data["phone"] = v
-    # استخراج آیتم‌ها
-    for grp in doc.get("LineItemGroups", []):
-        for line in grp.get("LineItems", []):
-            name = price = count = None
-            for lf in line.get("LineItemExpenseFields", []):
-                tp = lf.get("Type", {}).get("Text", "")
-                va = lf.get("ValueDetection", {}).get("Text", "")
-                if tp == "ITEM":
-                    name = va
-                elif tp == "PRICE":
-                    try: price = float(va.replace("$",""))
-                    except: price = None
-                elif tp == "QUANTITY":
-                    try: count = int(va)
-                    except: count = 1
-            if name:
-                data["items"][name] = {"price": price, "count": count or 1}
-    return data
-
+# Initialize product classifier with the directory from config
+classifier = ProductClassifier(
+    model_path=str(CLS_MODEL_DIR)
+)
 def build_items_df(exp_data: dict) -> pd.DataFrame:
     rows = []
     for nm, it in exp_data["items"].items():
@@ -116,7 +77,7 @@ def build_items_df(exp_data: dict) -> pd.DataFrame:
         })
     return pd.DataFrame(rows)
 
-# ─── صفحات Streamlit ───────────────────────────────────────────────────────────
+# ─── Streamlit Pages ───────────────────────────────────────────────────────────
 def auth_flow():
     st.title("Welcome to SmartReceipt AI")
     mode = st.selectbox("Login or Sign Up", ["Login", "Sign Up"])
@@ -152,27 +113,27 @@ def upload_page():
     st.title("📤 Upload Receipt")
     img_file = st.file_uploader("Upload Receipt Image", type=["png","jpg","jpeg"])
     if img_file is None:
-        # هیچ فایلی آپلود نشده؛ منتظر کاربر می‌مانیم
+        # no file uploaded, wait for user to upload
         return
 
-    # فقط وقتی فایل هست، ادامه بده:
+    # when a file is uploaded
     try:
         img_bytes = img_file.read()
     except Exception as e:
-        st.error(f"خطا در خواندن فایل: {e}")
+        st.error(f"Error to reading file: {e}")
         return
 
-    # حالا امن به Textract بفرست
+    # send the image to Textract
     try:
         result = parser.parse(img_bytes)
     except RuntimeError as e:
         st.error(str(e))
         return
 
-    # نمایش تصویر
-    st.image(img_bytes, caption="تصویر آپلود شده", use_container_width=True)
+    # show the image
+    st.image(img_bytes, caption="Uploaded Receipt", use_container_width=True)
 
-    # یک بار پردازش شده؛ مستقیماً نتیجه را نمایش بده
+    # Scanned before , just show the text
     for nm, it in result["items"].items():
         it["category"] = classifier.predict_category(nm)
     render_items_table(result["items"])
@@ -212,19 +173,36 @@ def upload_page():
     csv_it = items_df.to_csv(index=False).encode("utf-8")
     st.download_button("Download items CSV", csv_it, "items.csv", "text/csv")
 
-    # 3) ذخیره به دیتابیس (اختیاری)
+    # 3) save to DB (optional)
     text_hash = hashlib.sha256(result["text"].encode()).hexdigest()
     ocr_path  = OUTPUT_DIR / f"{text_hash}.txt"
     with open(ocr_path, "w", encoding="utf-8") as f:
         f.write(result["text"])
 
-    db.save_receipt(
-        data=result,
+    parsed = exp_data
+    # convert parsed date string into a datetime object
+    date_str = parsed["date"]  # e.g. "3/23/2025"
+    try:
+        # assuming month/day/year format
+        purchase_date = datetime.strptime(date_str, "%m/%d/%Y")
+    except (TypeError, ValueError):
+        # fallback: if it's already a datetime, use it as-is
+        purchase_date = parsed["date"]
+    items_list = [
+        {"name": name, "price": info["price"], "count": info["count"]}
+        for name, info in parsed["items"].items()
+    ]
+    receipt = db.save_receipt(
+        st.session_state.user_id,
+        parsed["store_name"] or "",
+        purchase_date,     # now a datetime, not a string
+        items_list,
+        store_address=parsed.get("store_address"),
+        phone=parsed.get("phone"),
+        text_hash=text_hash,
         ocr_path=str(ocr_path),
-        user_id=st.session_state.user_id,
-        store_name=exp_data["store_name"] or "",
-        store_location=exp_data["store_address"]
     )
+
     st.success("✅ Receipt saved!")
 
 def history_page():

@@ -131,11 +131,11 @@ def render_receipt_history(db, user_id):
     # تغییر نام ستون‌ها و نمایش دیتافریم
     df = receipts_df.rename(columns={
         "id": "ID",
-        "date": "تاریخ",
-        "total": "جمع کل",
-        "store_name": "فروشگاه"
+        "date": "Date",
+        "total": "Total",
+        "store_name": "store_name"
     })
-    st.subheader("📜 تاریخچهٔ رسیدها")
+    st.subheader("📜 Receipt History")
     st.dataframe(df, use_container_width=True)
 
     # انتخاب یک رسید برای نمایش جزئیات
