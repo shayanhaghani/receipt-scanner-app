@@ -6,7 +6,7 @@ from typing import Dict, Any
 
 # ---- فرم ورود/ثبت‌نام ----
 def render_login(db):
-    st.title("🔐 ورود یا ثبت‌نام")
+    st.title("🔐 Login or Sign up")
     mode = st.selectbox("", ["Login", "Sign Up"])
     if mode == "Sign Up":
         username = st.text_input("Username", key="su_user")
@@ -95,7 +95,7 @@ def render_profile(db, user_id: int):
             else:
                 st.error("Error updating profile.")
 
-def render_receipt_history(db, user_id):
+def render_receipt_history(db, user_id, classifier):
     """
     لیست رسیدهای کاربر با user_id را از دیتابیس بخواند
     و در قالب جدول نمایش دهد.
@@ -117,13 +117,64 @@ def render_receipt_history(db, user_id):
     st.dataframe(df, use_container_width=True)
 
     # انتخاب یک رسید برای نمایش جزئیات
-    sel = st.selectbox("انتخاب رسید برای جزییات", df["ID"])
+    sel = st.selectbox("Choose receipt for detail", df["ID"])
     items = db.get_items_by_receipt(sel)  # لیست آبجکت‌های Item
 
     # تبدیل آبجکت Item به دیکشنری
     items_list = [
-        {"نام": it.item_name, "قیمت": it.price, "دسته": it.category}
+        {
+            "Product Name": it.item_name,
+            "Price": it.price,
+            "Saved Category": it.category,
+            "Suggested Category": classifier.predict_category(it.item_name)
+        }
         for it in items
     ]
-    st.write("**جزئیات رسید:**")
-    st.table(pd.DataFrame(items_list))  
+    # تبدیل لیست به دیتافریم
+    df_items = pd.DataFrame(items_list)
+    df_items.insert(0, "Row", range(1, len(df_items) + 1))
+
+    df_items["Price"] = df_items["Price"].apply(lambda x: f"{x:.2f}")
+
+    st.write("**Receipt Details:**")
+    st.table(df_items.to_dict("records"))
+
+    st.write("---")
+    CATEGORIES = [
+        "Produce", "Groceries", "Snacks", "Drinks", "Dairy",
+        "Books/Magazine", "Coffee", "Clothes", "Personal Care", "Household",
+        "Baby", "Pet", "Transportation", "Healthcare", "Dining out", "Entertainment",
+        "Gift & Flowers", "Alcohol Drinks", "Tobacco", "Electronics", "Home Improvement", "Other"
+    ]
+    render_receipt_items_editable(db, sel, CATEGORIES)
+
+def render_receipt_items_editable(db, receipt_id, categories):
+    """
+    یک جدول ویرایش‌پذیر برای آیتم‌های رسید بر اساس دسته‌بندی
+    """
+    items = db.get_items_by_receipt(receipt_id)
+    st.write("📝 Edit Categories (Save to retrain your model!)")
+    updates = []
+    for it in items:
+        # مقدار فعلی category رو به عنوان مقدار پیش‌فرض بذار
+        new_cat = st.selectbox(
+            f"{it.item_name} ({it.price}$)",
+            categories,
+            index=categories.index(it.category) if it.category in categories else 0,
+            key=f"{receipt_id}_{it.id}"
+        )
+        updates.append({
+            "id": it.id,
+            "item_name": it.item_name,
+            "price": it.price,
+            "old_category": it.category,
+            "new_category": new_cat,
+        })
+    if st.button("💾 Save Category Corrections"):
+        for u in updates:
+            if u["new_category"] != u["old_category"]:
+                db.update_item_category(u["id"], u["new_category"])
+                # ذخیره تغییرات در CSV مخصوص آموزش مدل:
+                with open("Corrected_training_data.csv", "a", encoding="utf-8") as f:
+                    f.write(f"{u['item_name']},{u['new_category']}\n")
+        st.success("Categories updated!")    

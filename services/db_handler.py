@@ -242,3 +242,15 @@ class DBHandler:
         
 
 
+    def update_item_category(self, item_id: int, new_category: str):
+        """
+        به‌روزرسانی دسته‌بندی (category) یک آیتم بر اساس آی‌دی.
+        """
+        session = self.get_session()
+        try:
+            item = session.query(Item).filter_by(id=item_id).first()
+            if item:
+                item.category = new_category
+                session.commit()
+        finally:
+            session.close()

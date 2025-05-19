@@ -1,0 +1,81 @@
+: FARM BOY ST CLAIR
+-
+81 St Clair Ave East
+Toronto, Ontario
+: 81 St Clair Ave East
+: ST CLAIR
+: Toronto,
+: Ontario
+: FARM BOY
+: FARM BOY ST CLAIR
+-
+81 St Clair Ave East
+Toronto, Ontario
+: FARM BOY
+Master: $21.31
+Amount :: $21.31
+Temporary markdown: $3.75
+Date :: 04-06-2025
+: 4/6/2025
+: Apr 06 2025
+Inv#:: 00132320
+H.S.: T.# 84179 7046 RT0001
+Net Sales: $21.31
+SUB TOTAL: $21.31
+SAVING GRAND TOTAL: $3.75
+TOTAL SALES: $21.31
+: FARM BOY ST CLAIR
+-
+81 St Clair Ave East
+Toronto, Ontario
+: FARM BOY
+: FARM BOY
+Tel :: (416) - 963 8949
+Your Store Manager is:: Philip Jones Jr.
+Trs#:: 134792
+Markdown:: $0.49
+Markdown:: $1.10
+Markdown:: $0.66
+Markdown:: $1.50
+Balance: $0.00
+New customer balance: $0.00
+Item count: 8
+Trans#: 134792
+TRANSACTION RECORD: Card : ************2340 [7900]
+A0000000041010
+Card Type : MC (Mastercard)
+MASTERCARD
+Trans Type : PURCHASE
+Card Entry : RF (M)
+Auth # : 06609Z
+Sequence # : 001925222
+Trace ID : MCSNCCK4U0406
+Date : 04-06-2025
+Time : 19:35:53
+Card
+:: ************2340 [7900]
+Card Type :: MC (Mastercard)
+Trans Type :: PURCHASE
+Card Entry :: RF (M)
+Auth #
+:: 06609Z
+Sequence # :: 001925222
+Trace ID :: MCSNCCK4U0406
+Time :: 19:35:53
+ITEM: Pita Wheat 8" | PRICE: $1.99 | QUANTITY: 1 | UNIT_PRICE: 2/ $5.00 | EXPENSE_ROW: Pita Wheat 8" $1.99
+1 @ 2/ $5.00
+ITEM: Mush Brown Whol 227 | PRICE: $2.50 | QUANTITY: 0.500 kg | UNIT_PRICE: $4.39/kg | EXPENSE_ROW: Mush Brown Whol 227 $2.50
+Markdown: $0.49
+0.500 kg @ $4.39/kg
+ITEM: ORANGE Blood | PRICE: $2.20 | QUANTITY: 0.430 kg | UNIT_PRICE: $6.59/kg | EXPENSE_ROW: ORANGE Blood $2.20
+Markdown: $1.10
+0.430 kg @ $6.59/kg
+ITEM: Apple Royal Gala | PRICE: $2.83 | QUANTITY: 0.340 kg | UNIT_PRICE: $4.39/kg | EXPENSE_ROW: Apple Royal Gala $2.83
+0.340 kg @ $4.39/kg
+ITEM: YAM Sweet | PRICE: $1.49 | QUANTITY: 0.300 kg | UNIT_PRICE: $4.39/kg | EXPENSE_ROW: YAM Sweet $1.49
+0.300 kg @ $4.39/kg
+ITEM: SPROUT Brussel | PRICE: $1.32 | EXPENSE_ROW: SPROUT Brussel $1.32
+Markdown: $0.66
+ITEM: French's Ketchup | PRICE: $5.99 | EXPENSE_ROW: French's Ketchup $5.99
+ITEM: CrustiniBurger Buns | PRICE: $2.99 | EXPENSE_ROW: CrustiniBurger Buns $2.99
+Markdown: $1.50

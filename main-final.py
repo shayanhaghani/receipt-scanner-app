@@ -71,6 +71,7 @@ def build_items_df(exp_data: dict) -> pd.DataFrame:
             "Item": nm,
             "Price": it["price"],
             "Quantity": it["count"],
+            "Category": it.get("category", ""),
             "Total": (it["price"] or 0) * it["count"]
         })
     return pd.DataFrame(rows)
@@ -106,6 +107,24 @@ def auth_flow():
                 st.experimental_rerun()
             else:
                 st.error("Invalid credentials.")
+def parse_datetime_safe(date_str):
+    if isinstance(date_str, datetime):
+        return date_str
+    formats = [
+        "%m/%d/%Y",   # 4/6/2025
+        "%Y-%m-%d",   # 2025-04-06
+        "%b %d %Y",   # Apr 06 2025
+        "%B %d %Y",   # April 06 2025
+        "%d %b %Y",   # 06 Apr 2025
+        "%d %B %Y",   # 06 April 2025
+    ]
+    for fmt in formats:
+        try:
+            return datetime.strptime(date_str, fmt)
+        except Exception:
+            continue
+    return datetime.now()  # اگر هیچ فرمت نخورد، تاریخ امروز رو برمی‌گردونه
+
 
 def upload_page():
     st.title("📤 Upload Receipt")
@@ -131,11 +150,6 @@ def upload_page():
     # show the image
     st.image(img_bytes, caption="Uploaded Receipt", use_container_width=True)
 
-    # Scanned before , just show the text
-    for nm, it in result["items"].items():
-        it["category"] = classifier.predict_category(nm)
-
-
     # 2) TEMP: نمایش OCR و تولید CSV مشابه کنسول Textract
     st.markdown("---")
     st.subheader("🔍 Temporary Textract Expense Debug")
@@ -144,6 +158,12 @@ def upload_page():
     # Expense API
     exp_resp = call_expense_analyzer(img_bytes)
     exp_data = parse_expense_response(exp_resp)
+
+    for nm, it in result["items"].items():
+        pred = classifier.predict_category(nm)
+        it["category"] = pred
+        if nm in exp_data["items"]:
+            exp_data["items"][nm]["category"] = pred
 
     # CSV metadata
     meta_df = pd.DataFrame([{
@@ -173,22 +193,16 @@ def upload_page():
         f.write(result["text"])
 
     parsed = exp_data
-    # convert parsed date string into a datetime object
-    date_str = parsed["date"]  # e.g. "3/23/2025"
-    try:
-        # assuming month/day/year format
-        purchase_date = datetime.strptime(date_str, "%m/%d/%Y")
-    except (TypeError, ValueError):
-        # fallback: if it's already a datetime, use it as-is
-        purchase_date = parsed["date"]
+    date_str = parsed["date"]
+    purchase_date = parse_datetime_safe(date_str)
     items_list = [
-        {"name": name, "price": info["price"], "count": info["count"]}
+        {"name": name, "price": info["price"], "count": info["count"], "category": info.get("category", "")}
         for name, info in parsed["items"].items()
     ]
     receipt = db.save_receipt(
         st.session_state.user_id,
         parsed["store_name"] or "",
-        purchase_date,     # now a datetime, not a string
+        purchase_date,     # حالا واقعاً datetime هست
         items_list,
         store_address=parsed.get("store_address"),
         phone=parsed.get("phone"),
@@ -200,7 +214,7 @@ def upload_page():
 
 def history_page():
     st.title("🕒 Receipt History")
-    render_receipt_history(db, st.session_state.user_id)
+    render_receipt_history(db, st.session_state.user_id, classifier)
 
 def dashboard_page():
     st.title("📊 Dashboard")

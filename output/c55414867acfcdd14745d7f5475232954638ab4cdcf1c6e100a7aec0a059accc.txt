@@ -1,0 +1,58 @@
+: FARM BOY - ST CLAIR
+81 St Clair Ave East
+Toronto, Ontario
+: 81 St Clair Ave East
+: ST CLAIR
+: Toronto,
+: Ontario
+: FARM BOY
+: FARM BOY - ST CLAIR
+81 St Clair Ave East
+Toronto, Ontario
+: FARM BOY
+Visa: $26.71
+Amount :: $26.71
+SAVING GRAND TOTAL: $1.53
+Date :: 04-12-2025
+: Apr 12 2025
+: 4/12/2025
+Inv#:: 00133428
+H.S.T.#: 84179 7046 RT0001
+Net Sales: $26.43
+TOTAL SALES: $26.71
+SUB TOTAL: $26.71
+HST [$0.25]: $0.03
+: FARM BOY - ST CLAIR
+81 St Clair Ave East
+Toronto, Ontario
+: FARM BOY
+: FARM BOY
+Tel :: -
+(416) 963 8949
+Your Store Manager is:: Philip Jones Jr.
+Trs#:: 135924
+Markdown:: $1.53
+Balance: $0.00
+New customer balance: $0.00
+Item count: 8
+Temporary markdown: $1.53
+Trans#: 135924
+Card :: 6104 [2088]
+Card Type :: VI (Visa)
+Trans Type :: PURCHASE
+Card Entry: RF<M)
+Auth # :: 01609N
+Sequence # :: 001931089
+Trace ID :: 465102694403602
+Time: 15:17:20
+ITEM: CARROT Cello16x3lb | PRICE: $3.99 | EXPENSE_ROW: CARROT Cello16x3lb $3.99
+ITEM: ORG Strawberries | PRICE: $2.99 | EXPENSE_ROW: ORG Strawberries $2.99
+ITEM: TOMATO Cocktail | PRICE: $2.99 | EXPENSE_ROW: TOMATO Cocktail $2.99
+ITEM: FB Spicy Hummus | PRICE: $4.99 | QUANTITY: 0.695 kg | UNIT_PRICE: $4.39/kg | EXPENSE_ROW: FB Spicy Hummus $4.99
+0.695 kg @ $4.39/kg
+ITEM: BROCCOLI Crowns | PRICE: $3.05 | EXPENSE_ROW: BROCCOLI Crowns $3.05
+Markdown: $1.53
+ITEM: White Baguette | PRICE: $1.99 | EXPENSE_ROW: White Baguette $1.99
+ITEM: Fig dried 200gr | PRICE: $3.44 | EXPENSE_ROW: Fig dried 200gr $3.44
+ITEM: ORG Strawberries | PRICE: $2.99 | EXPENSE_ROW: ORG Strawberries $2.99
+ITEM: Paper Bag W/ Handle | PRICE: $0.25 | EXPENSE_ROW: Paper Bag W/ Handle $0.25

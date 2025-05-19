@@ -1,0 +1,74 @@
+: FARM BOY ST CLAIR
+-
+81 St Clair Ave East
+Toronto, Ontario
+: 81 St Clair Ave East
+: ST CLAIR
+: Toronto,
+: Ontario
+: FARM BOY
+: FARM BOY ST CLAIR
+-
+81 St Clair Ave East
+Toronto, Ontario
+: FARM BOY
+Visa: $11.97
+Temporary markdown: $1.00
+SAVING GRAND TOTAL: $1.00
+:
+Date: 04-05-2025
+: Apr 05 2025
+: 4/5/2025
+Inv#:: 00269529
+H.S.T.#: 84179 7046 RT0001
+Net Sales: $11.97
+TOTAL SALES: $11.97
+SUB TOTAL: $11.97
+Amount: $11.97
+: FARM BOY ST CLAIR
+-
+81 St Clair Ave East
+Toronto, Ontario
+: FARM BOY
+: FARM BOY
+Tel:: (416) - 963 8949
+Your Store Manager is:: Philip Jones Jr.
+Trs#:: 271322
+Markdown:: $1.00
+Balance: $0.00
+New customer balance: $0.00
+Item count: 4
+Trans#: 271322
+TRANSACTION RECORD: Card : ************6104 [2088]
+A0000000031010
+Card Type : VI (Visa)
+Visa CREDIT
+Trans Type : PURCHASE
+Card Entry : RF (M)
+07491N
+Auth # :
+001926421
+Sequence # :
+385095817690925
+Trace ID :
+04-05-2025
+:
+Date
+18:42:49
+:
+Time
+Card :: ************6104 [2088]
+Card Type :: VI (Visa)
+Trans Type :: PURCHASE
+Card Entry :: RF (M)
+Auth # :: 07491N
+Sequence # :: 001926421
+Trace ID :: 385095817690925
+Time: 18:42:49
+ITEM: Cantaloupe X large | PRICE: $3.99 | QUANTITY: 0.310 kg | UNIT_PRICE: $6.59/kg | EXPENSE_ROW: Cantaloupe X large $3.99
+Markdown: $1.00
+0.310 kg @ $6.59/kg
+ITEM: TOMATO Vine Ripe | PRICE: $2.04 | QUANTITY: 0.355 kg | UNIT_PRICE: $5.49/kg | EXPENSE_ROW: TOMATO Vine Ripe $2.04
+0.355 kg @ $5.49/kg
+ITEM: POTATO Yellow Loos | PRICE: $1.95 | EXPENSE_ROW: POTATO Yellow Loos $1.95
+ITEM: ONION Cello 3LB | PRICE: $3.99 | EXPENSE_ROW: ONION Cello 3LB $3.99
