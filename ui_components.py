@@ -47,12 +47,6 @@ def render_logout():
 def render_upload():
     return st.file_uploader("Upload Receipt Image", type=["png","jpg","jpeg"])
 
-# ---- نمایش خلاصه رسید ----
-def render_summary(total: float, tax: float, discount: float):
-    st.subheader("💰 Summary")
-    st.markdown(f"- **Total:** ${total:.2f}")
-    st.markdown(f"- **Tax:** ${tax:.2f}")
-    st.markdown(f"- **Discount:** ${discount:.2f}")
 
 # ---- تاریخچه رسیدها ----
 def render_history(db, user_id: int):
@@ -100,22 +94,6 @@ def render_profile(db, user_id: int):
                 st.success("Profile updated successfully.")
             else:
                 st.error("Error updating profile.")
-
-
-def render_items_table(items: Dict[str, Any]) -> None:
-  
-    df = pd.DataFrame([
-        {
-            "Item": name,
-            "Price": data.get("price", 0.0),
-            "Count": data.get("count", 1),
-            "Category": data.get("category", "")
-        }
-        for name, data in items.items()
-    ])
-    df.index += 1
-    st.subheader("📋 Items")
-    st.dataframe(df, use_container_width=True)
 
 def render_receipt_history(db, user_id):
     """

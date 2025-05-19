@@ -1,0 +1,88 @@
+: FARM BOY ST CLAIR
+-
+81 St Clair Ave East
+Ontario
+Toronto,
+: 81 St Clair Ave East
+: Toronto,
+: Ontario
+: FARM BOY
+: 81 St Clair Ave East
+Ontario
+Toronto,
+: FARM BOY
+Visa: $50.53
+: 3/27/2025
+Inv#:: 00119138
+H.S.T.#: 84179 7046 RT0001
+Net Sales: $49.96
+TOTAL SALES: $50.53
+HST [$0.50]: $0.07
+SUB TOTAL: $50.53
+: FARM BOY ST CLAIR
+-
+81 St Clair Ave East
+Ontario
+Toronto,
+: FARM BOY
+: FARM BOY
+Tel:: (416) - 963 8949
+Store Manager is:: Philip Jones Jr.
+Trs#:: 119999
+Markdown:: $1.34
+Balance: $0.00
+ITEM: Swiss Farmer bread | PRICE: $4.99 | QUANTITY: 0.390 kg | UNIT_PRICE: $6.59/kg | EXPENSE_ROW: $4.99
+Swiss Farmer bread
+0.390 kg @ $6.59/kg
+$2.57
+ITEM: TOMATO Vine Ripe | PRICE: $2.57 | EXPENSE_ROW: 0.390 kg
+$2.57
+TOMATO Vine Ripe
+$0.25
+Handle
+ITEM: MUSHROOM Coffee | PRICE: $2.48 | QUANTITY: 0.495 kg | UNIT_PRICE: $4.39/kg | EXPENSE_ROW: [Tare: 0.010 kgl 0.225 kg
+$2.48
+MUSHROOM Coffee
+0.495 kg @ $4.39/kg
+$2.17
+Crowns
+ITEM: BROCCOLI Crowns | PRICE: $2.17 | QUANTITY: 1 | UNIT_PRICE: $5.00 | EXPENSE_ROW: 0.495 kg @ $4.39/kg
+$2.17
+BROCCOLI Crowns
+Markdown: $1.09
+1 @ 4/ $5.00
+$1.25
+Eng Reg
+ITEM: CUCUMBER Eng Reg | PRICE: $1.25 | EXPENSE_ROW: 1 @
+$1.25
+CUCUMBER Eng Reg
+Markdown: $0.25
+ITEM: PEPPER Jalapeno | PRICE: $1.96 | QUANTITY: 1 | UNIT_PRICE: $5.00 | EXPENSE_ROW: $1.96
+PEPPER Jalapeno
+1 @ 2/ $5.00
+$2.50
+ITEM: Onion Red 21b | PRICE: $2.50 | EXPENSE_ROW: $2.50
+Onion Red 21b
+Markdown: $1.49
+ITEM: POTATO Yellow 5lbs | PRICE: $2.99 | QUANTITY: 1 | UNIT_PRICE: $5.00 | EXPENSE_ROW: POTATO Yellow 5lbs $2.99
+Markdown: $1.00
+1 @ 2/ $5.00
+ITEM: BEET 2 lbs | PRICE: $2.50 | QUANTITY: 0.405 kg | UNIT_PRICE: $5.49/kg | EXPENSE_ROW: $2.50
+BEET 2 lbs
+Markdown: $0.49
+0.405 kg @ $5.49/kg
+ITEM: Apple Honey Crisp | PRICE: $2.22 | EXPENSE_ROW: Apple Honey Crisp $2.22
+Markdown: $1.34
+ITEM: BLUEBERRIES | PRICE: $2.99 | QUANTITY: 0.220 kg | UNIT_PRICE: $5.49/kg | EXPENSE_ROW: BLUEBERRIES $2.99
+Markdown: $2.00
+0.220 kg @ $5.49/kg
+ITEM: SQUASH ZucchiniReg | PRICE: $1.21 | EXPENSE_ROW: SQUASH ZucchiniReg $1.21
+ITEM: Fig dried 200gn | PRICE: $3.44 | EXPENSE_ROW: $3.44
+Fig dried 200gn
+$16.69
+ITEM: CHICK- Thigh BnlsSL | PRICE: $16.69 | EXPENSE_ROW: $16.69
+CHICK- Thigh BnlsSL
+$0.25
+ITEM: Paper Bag w/ Handle | PRICE: $0.25 | EXPENSE_ROW: CHICK- Thigh BnlsSL
+$0.25 -HST
+Paper Bag w/ Handle

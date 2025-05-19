@@ -36,10 +36,8 @@ from models import Base
 from services.db_handler import DBHandler
 from receipt_parser import ReceiptParser
 from product_classifier import ProductClassifier
-from ui_components import (
-    render_items_table,   
+from ui_components import (   
     render_upload,
-    render_summary,
     render_receipt_history,   
     render_dashboard,
     render_profile,
@@ -136,12 +134,7 @@ def upload_page():
     # Scanned before , just show the text
     for nm, it in result["items"].items():
         it["category"] = classifier.predict_category(nm)
-    render_items_table(result["items"])
-    render_summary(
-        total=result.get("total", 0.0),
-        tax=result.get("tax", 0.0),
-        discount=result.get("discount", 0.0)
-    )
+
 
     # 2) TEMP: نمایش OCR و تولید CSV مشابه کنسول Textract
     st.markdown("---")
