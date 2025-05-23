@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker, Session, joinedload
 from config import DATABASE_URL
 from models import Base, User, Receipt, Item, Store  # import all models here
 from passlib.context import CryptContext
@@ -88,11 +88,16 @@ class DBHandler:
 
     def get_receipts_by_user(self, user_id: int) -> list[Receipt]:
         """
-        Return all Receipt ORM objects for a given user.
+        Return all Receipt ORM objects for a given user (with joined store).
         """
         session = self.get_session()
         try:
-            return session.query(Receipt).filter_by(user_id=user_id).all()
+            return (
+                session.query(Receipt)
+                .options(joinedload(Receipt.store))
+                .filter_by(user_id=user_id)
+                .all()
+            )
         finally:
             session.close()
 
