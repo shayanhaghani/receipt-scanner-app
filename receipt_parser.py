@@ -92,29 +92,30 @@ class ReceiptParser:
         doc = self.cls_model(text)
         return max(doc.cats, key=doc.cats.get) if doc.cats else ""
 
+    from collections import defaultdict
+
     def aggregate_items(self, entities: list[tuple[str, str]]) -> dict:
-        """
-        تجمیع آیتم‌ها و قیمت‌ها بر اساس موجودیت‌های استخراج‌شده
-        خروجی:
-            {item_name: {"price": float, "count": int, "category": str}}
-        """
-        items = defaultdict(lambda: {"price": 0.0, "count": 0, "category": ""})
+        items = []
+        current_item = None
         for val, lab in entities:
             if lab == "ITEM":
-                current = items[val]
-                current["count"] += 1
-                current["category"] = self.predict_category(val)
-            elif lab == "PRICE":
-                # مقدار عددی را استخراج و به آیتم قبل نسبت می‌دهیم
+                current_item = val
+            elif lab == "PRICE" and current_item is not None:
                 try:
-                    price = float(val.replace(',', ''))
+                    price = float(val.replace(',', '').replace('$', ''))
+                    items.append((current_item, price))
                 except ValueError:
-                    continue
-                # آخرین آیتم اضافه‌شده
-                last_item = list(items.keys())[-1] if items else None
-                if last_item:
-                    items[last_item]["price"] = price
-        return items
+                    pass
+                current_item = None  # Reset for the next pair
+
+        # تجمیع نهایی برای quantity و دسته‌بندی
+        agg = defaultdict(lambda: {"price": 0.0, "count": 0, "category": ""})
+        for item, price in items:
+            key = (item, price)
+            agg[key]["price"] = price
+            agg[key]["count"] += 1
+            agg[key]["category"] = self.predict_category(item)
+        return agg
 
     def parse(self, image_bytes: bytes) -> dict:
         """
