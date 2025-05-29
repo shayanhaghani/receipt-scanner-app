@@ -64,17 +64,25 @@ parser = ReceiptParser(
 classifier = ProductClassifier(
     model_path=str(CLS_MODEL_DIR)
 )
-def build_items_df(exp_data: dict) -> pd.DataFrame:
-    rows = []
-    for nm, it in exp_data["items"].items():
-        rows.append({
-            "Item": nm,
-            "Price": it["price"],
-            "Quantity": it["count"],
-            "Category": it.get("category", ""),
-            "Total": (it["price"] or 0) * it["count"]
-        })
-    return pd.DataFrame(rows)
+def build_items_df(exp_data):
+    items_data = []
+    for it in exp_data["items"]:
+        if isinstance(it, dict) and "item" in it and "price" in it:
+            item_name = it["item"]
+            price = it["price"]
+            count = it.get("quantity", 1)
+            category = it.get("category", "")
+            items_data.append({
+                "item": item_name,
+                "price": price,
+                "quantity": count,
+                "category": category,
+                "total": price * count
+            })
+        else:
+            print("Warning: Unexpected item format in build_items_df:", it)
+    return pd.DataFrame(items_data)
+    
 
 # ─── Streamlit Pages ───────────────────────────────────────────────────────────
 def auth_flow():
@@ -125,92 +133,112 @@ def parse_datetime_safe(date_str):
             continue
     return datetime.now()  # اگر هیچ فرمت نخورد، تاریخ امروز رو برمی‌گردونه
 
-
 def upload_page():
     st.title("📤 Upload Receipt")
     img_file = st.file_uploader("Upload Receipt Image", type=["png","jpg","jpeg"])
     if img_file is None:
-        # no file uploaded, wait for user to upload
         return
 
-    # when a file is uploaded
     try:
         img_bytes = img_file.read()
     except Exception as e:
         st.error(f"Error to reading file: {e}")
         return
 
-    # send the image to Textract
+    # نمایش عکس رسید
+    st.image(img_bytes, caption="Uploaded Receipt", use_container_width=True)
+
+    # تحلیل رسید با مدل NER و Textract
     try:
         result = parser.parse(img_bytes)
     except RuntimeError as e:
         st.error(str(e))
         return
-
-    # show the image
-    st.image(img_bytes, caption="Uploaded Receipt", use_container_width=True)
-
-    # 2) TEMP: نمایش OCR و تولید CSV مشابه کنسول Textract
+     # نمایش متن خام OCR
     st.markdown("---")
-    st.subheader("🔍 Temporary Textract Expense Debug")
+    st.subheader("🔍 OCR Raw Text")
     st.text_area("Raw OCR Text", result["text"], height=200)
 
-    # Expense API
+
+    # جدول آیتم‌های استخراج شده (مستقل از Textract)
+    items_df_ner = pd.DataFrame(result["items"])
+    if not items_df_ner.empty:
+        items_df_ner["Total"] = items_df_ner["price"] * items_df_ner["quantity"]
+    else:
+        items_df_ner = pd.DataFrame(columns=["item", "price", "quantity", "category", "Total"])
+    st.subheader("🛒 Items Table (NER Extracted)")
+    st.dataframe(items_df_ner, use_container_width=True)
+    csv_items_ner = items_df_ner.to_csv(index=False).encode("utf-8")
+    st.download_button("Download NER Items CSV", csv_items_ner, "items_ner.csv", "text/csv", key="items-ner-csv-btn")
+
+   
+    # تحلیل با Textract Expense (ساختار رسمی AWS)
     exp_resp = call_expense_analyzer(img_bytes)
     exp_data = parse_expense_response(exp_resp)
 
-    for nm, it in result["items"].items():
-        pred = classifier.predict_category(nm)
-        it["category"] = pred
-        if nm in exp_data["items"]:
-            exp_data["items"][nm]["category"] = pred
+    # اضافه‌کردن دسته‌بندی پیش‌بینی‌شده به آیتم‌های exp_data
+    for it in exp_data["items"]:
+        if isinstance(it, dict) and "item" in it and "price" in it:
+            item_name = it["item"]
+            price = it["price"]
+            pred = classifier.predict_category(item_name)
+            it["category"] = pred
+        else:
+            print("Warning: Unexpected item structure:", it)
 
-    # CSV metadata
+   
+    # جدول متادیتا (فروشگاه، آدرس، تاریخ، تلفن)
     meta_df = pd.DataFrame([{
         "Store Name": exp_data["store_name"],
         "Address": exp_data["store_address"],
         "Date": exp_data["date"],
         "Phone": exp_data["phone"]
     }])
-    csv_meta = meta_df.to_csv(index=False).encode("utf-8")
-    st.download_button("Download metadata CSV", csv_meta, "metadata.csv", "text/csv")
-
-    # ── METADATA TABLE DISPLAY START
     st.subheader("🏷️ Receipt Metadata")
     st.table(meta_df)
-# ── METADATA TABLE DISPLAY END
+    csv_meta = meta_df.to_csv(index=False).encode("utf-8")
+    st.download_button("Download metadata CSV", csv_meta, "metadata.csv", "text/csv", key="meta-csv-btn")
 
-    # CSV items
-    items_df = build_items_df(exp_data)
-    st.dataframe(items_df)
-    csv_it = items_df.to_csv(index=False).encode("utf-8")
-    st.download_button("Download items CSV", csv_it, "items.csv", "text/csv")
-
-    # 3) save to DB (optional)
+    # ذخیره فایل OCR در output
     text_hash = hashlib.sha256(result["text"].encode()).hexdigest()
     ocr_path  = OUTPUT_DIR / f"{text_hash}.txt"
     with open(ocr_path, "w", encoding="utf-8") as f:
         f.write(result["text"])
 
+    # آماده‌سازی داده برای دیتابیس
     parsed = exp_data
     date_str = parsed["date"]
     purchase_date = parse_datetime_safe(date_str)
-    items_list = [
-        {"name": name, "price": info["price"], "count": info["count"], "category": info.get("category", "")}
-        for name, info in parsed["items"].items()
-    ]
-    receipt = db.save_receipt(
-        st.session_state.user_id,
-        parsed["store_name"] or "",
-        purchase_date,     # حالا واقعاً datetime هست
-        items_list,
-        store_address=parsed.get("store_address"),
-        phone=parsed.get("phone"),
-        text_hash=text_hash,
-        ocr_path=str(ocr_path),
-    )
+    items_list = []
+    for it in parsed["items"]:
+        if isinstance(it, dict) and "item" in it and "price" in it:
+            items_list.append({
+                "name": it["item"],
+                "price": it["price"],
+                "count": it.get("quantity", 1),
+                "category": it.get("category", "")
+            })
+        else:
+            print("Warning: unexpected item format in items_list:", it)
+    # ذخیره در دیتابیس با مدیریت ارور
+    try:
+        receipt = db.save_receipt(
+            st.session_state.user_id,
+            parsed["store_name"] or "",
+            purchase_date,
+            items_list,
+            store_address=parsed.get("store_address"),
+            phone=parsed.get("phone"),
+            text_hash=text_hash,
+            ocr_path=str(ocr_path),
+        )
+        st.success("Receipt successfully saved.")
+    except Exception as e:
+        if "UNIQUE constraint failed: receipts.text_hash" in str(e):
+            st.warning("This receipt has already been uploaded and cannot be registered again.")
+        else:
+            st.error(f"Error saving receipt: {str(e)}")
 
-    st.success("✅ Receipt saved!")
 
 def history_page():
     st.title("🕒 Receipt History")

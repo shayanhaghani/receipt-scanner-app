@@ -108,7 +108,6 @@ class ReceiptParser:
                     pass
                 current_item = None  # Reset for the next pair
 
-        # تجمیع نهایی برای quantity و دسته‌بندی
         agg = defaultdict(lambda: {"price": 0.0, "count": 0, "category": ""})
         for item, price in items:
             key = (item, price)
@@ -134,10 +133,27 @@ class ReceiptParser:
         entities = self.extract_entities(text)
         # 4. تجمیع آیتم‌ها
         items = self.aggregate_items(entities)
+        result_items = []
+        for (item, price), val in items.items():
+            result_items.append({
+                "item": item,
+                "price": price,
+                "quantity": val["count"],
+                "category": val["category"]
+            })
+
+
+        return {
+            "text": text,
+            "entities": entities,
+            "items": result_items,
+            # سایر مقادیر در صورت نیاز
+        }
 
         # محاسبات اضافی: جمع کل، مالیات و تخفیف
         def _find_amount(labels):
             for val, lab in entities:
+                print(val, lab)
                 if lab in labels:
                     try:
                         return float(val.replace(',', ''))
