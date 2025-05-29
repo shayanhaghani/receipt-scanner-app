@@ -1,0 +1,41 @@
+: UNIQLO Toronto Eaton Centre
+220 Yonge St, Unit C301
+Toronto, ON M5B 2L7
+: 220 Yonge St, Unit C301
+: Toronto,
+: ON
+: M5B 2L7
+: UNIQLO Toronto Eaton
+: 220 Yonge St, Unit C301
+Toronto, ON M5B 2L7
+: UNI
+QLO
+Credit / Debit Card / Contactless
+VISA: $129.73
+Customer no.: *********9424
+: 2025-04-06
+Receipt no.: 0002-2025-04-06-35-0191
+GST/HST#: 815579586RT0001
+GST/HST#: 815579586RT0001
+Subtotal: $114.80
+NET Sales: $114.80
+H 13.000% of $114.80: $14.93
+Sales tax total: $14.93
+TOTAL: $129.73
+: UNIQLO Toronto Eaton Centre
+220 Yonge St, Unit C301
+Toronto, ON M5B 2L7
+: UNIQLO Toronto Eaton
+: UNI
+QLO
+: WWW.UNIQLO.COM
+Units sold: 4
+Payment Method: Credit / Debit Card / Contactless $129.73
+VISA
+PRODUCT_CODE: 2000200993988 | ITEM: Slim fit chino pants | PRICE: $59.90 H | QUANTITY: 1 | EXPENSE_ROW: Slim fit chino pants
+2000200993988 1 $59.90 H
+ITEM: Multi-unit promo price 2 for
+W's T dress | PRICE: $14.90 | EXPENSE_ROW: Multi-unit promo price 2 for $14.90
+W's T dress
+ITEM: Paper Bag/Sac Papier | PRICE: $0.10 H | EXPENSE_ROW: Paper Bag/Sac Papier $0.10 H
+PRODUCT_CODE: 2000194527923 | PRICE: $39.90 H | QUANTITY: 1 | EXPENSE_ROW: 2000194527923 1 $39.90 H

@@ -366,8 +366,10 @@ def render_receipt_history(db, user_id, classifier):
         "total": "Total",
         "store_name": "store_name"
     })
+    
     st.subheader("📜 Receipt History")
     st.dataframe(df, use_container_width=True)
+    
 
     # انتخاب یک رسید برای نمایش جزئیات
     sel = st.selectbox("Choose receipt for detail", df["ID"])
@@ -386,6 +388,8 @@ def render_receipt_history(db, user_id, classifier):
     # تبدیل لیست به دیتافریم
     df_items = pd.DataFrame(items_list)
     df_items.insert(0, "Row", range(1, len(df_items) + 1))
+    print(df_items.columns)
+    
 
     df_items["Price"] = df_items["Price"].apply(lambda x: f"{x:.2f}")
 
