@@ -1,0 +1,44 @@
+: Yorkville YRK
+416-944-0500
+87 Avenue Road
+: 87 Avenue Road
+: Yorkville
+: YRK
+: Yorkville YRK
+416-944-0500
+87 Avenue Road
+: adidas admission
+WHOLE
+FOODS
+R
+MARKET
+VISA: $14.85
+Amount: CAD$14.85
+Employee Discount 20.0%: $3.70
+: 04/18/2025
+Tran. #:: 7281
+TAX: 894696764
+Balance to pay: $14.85
+Balance to pay: $14.85
+: Yorkville YRK
+416-944-0500
+87 Avenue Road
+: adidas admission
+WHOLE
+FOODS
+R
+MARKET
+: 416-944-0500
+Employee Discount: 20.0%
+G 5.0%: 1.20 0.06
+PF 0.0%: 1.20 0.00
+N 0.0%: 13.59 0.00
+No. items: 2
+Type:: Purchase
+Acct:: Visa
+Card #:: XXXXXXXXXXXX6104
+Reference #:: 0012000750 H
+Auth. #:: 05016N
+Visa CREDIT: A0000000031010
+ITEM: PIE MICHIGAN MIXED BE | PRICE: $16.99 | EXPENSE_ROW: PIE MICHIGAN MIXED BE $16.99 N
+ITEM: COOKIE SINGLE 5 OR LE | PRICE: $1.50 | EXPENSE_ROW: COOKIE SINGLE 5 OR LE $1.50 GPF

@@ -1,5 +1,7 @@
 import os
 import hashlib
+import logging
+from functools import lru_cache
 from pathlib import Path
 from datetime import datetime
 from config import (
@@ -12,8 +14,8 @@ from config import (
 )
 
 import streamlit as st
-# ─── Shim for st.experimental_rerun ──────────────────────────────────
-# در نسخه‌های جدید Streamlit این تابع حذف شده، پس اگر در دسترس نبود، با RerunException جایگزینش می‌کنیم.
+# Shim for st.experimental_rerun
+# In newer versions of Streamlit this function is removed, so if not available, we replace it with RerunException
 try:
     _ = st.experimental_rerun
 except AttributeError:
@@ -131,7 +133,7 @@ def parse_datetime_safe(date_str):
             return datetime.strptime(date_str, fmt)
         except Exception:
             continue
-    return datetime.now()  # اگر هیچ فرمت نخورد، تاریخ امروز رو برمی‌گردونه
+    return datetime.now()  # If no format matches, return current date
 
 def upload_page():
     st.title("📤 Upload Receipt")
@@ -141,42 +143,78 @@ def upload_page():
 
     try:
         img_bytes = img_file.read()
+        if len(img_bytes) > 5 * 1024 * 1024:  # 5MB limit
+            st.error("File size too large. Maximum size is 5MB.")
+            return
     except Exception as e:
-        st.error(f"Error to reading file: {e}")
+        logging.error(f"Error reading file: {e}")
+        st.error("Error reading file. Please try again.")
         return
 
-    # نمایش عکس رسید
+    # Display receipt image
     st.image(img_bytes, caption="Uploaded Receipt", use_container_width=True)
 
-    # تحلیل رسید با مدل NER و Textract
+    # Analyze receipt with NER model and Textract
     try:
         result = parser.parse(img_bytes)
-    except RuntimeError as e:
-        st.error(str(e))
+        total_amount = result.get("total_amount", 0.0)
+    except Exception as e:
+        logging.error(f"Error parsing receipt: {e}")
+        st.error("Error processing receipt. Please try again.")
         return
-     # نمایش متن خام OCR
-    st.markdown("---")
-    st.subheader("🔍 OCR Raw Text")
-    st.text_area("Raw OCR Text", result["text"], height=200)
 
-
-    # جدول آیتم‌های استخراج شده (مستقل از Textract)
+    # Display items table with breakdown
     items_df_ner = pd.DataFrame(result["items"])
     if not items_df_ner.empty:
+        # Convert price to float first
+        items_df_ner["price"] = pd.to_numeric(items_df_ner["price"], errors='coerce')
         items_df_ner["Total"] = items_df_ner["price"] * items_df_ner["quantity"]
+        
+        # Calculate subtotal before formatting
+        subtotal = items_df_ner["Total"].sum() if not items_df_ner.empty else 0.0
+        
+        # Now format for display
+        items_df_ner["price"] = items_df_ner["price"].apply(lambda x: f"{x:.2f}")
+        items_df_ner["Total"] = items_df_ner["Total"].apply(lambda x: f"{x:.2f}")
     else:
         items_df_ner = pd.DataFrame(columns=["item", "price", "quantity", "category", "Total"])
+        subtotal = 0.0
+    
     st.subheader("🛒 Items Table (NER Extracted)")
     st.dataframe(items_df_ner, use_container_width=True)
+    
+    # Calculate all amounts first
+    subtotal = items_df_ner["Total"].astype(float).sum() if not items_df_ner.empty else 0.0
+    total_amount = float(result.get("total_amount", 0.0))
+    discount = float(result.get("discount", 0.0))
+    subtotal_after_discount = subtotal - discount
+    tax = round(total_amount - subtotal_after_discount, 2)
+
+    # Create summary DataFrame with all fields always present
+    summary_data = [
+        {"Type": "Subtotal", "Amount": f"${subtotal:.2f}", "Note": ""},
+        {"Type": "Discount", "Amount": f"-${discount:.2f}", "Note": f"({(discount/subtotal*100):.1f}% off)" if discount > 0 else ""},
+        {"Type": "Subtotal after discount", "Amount": f"${subtotal_after_discount:.2f}", "Note": ""},
+        {"Type": "Tax", "Amount": f"${tax:.2f}", "Note": f"({(tax/subtotal_after_discount*100):.1f}%)" if tax > 0 else ""},
+        {"Type": "Total Amount", "Amount": f"${total_amount:.2f}", "Note": ""}
+    ]
+    
+    # Create and display summary table
+    summary_df = pd.DataFrame(summary_data)
+    summary_df = summary_df.set_index("Type")
+    
+    st.subheader("💰 Receipt Summary")
+    st.table(summary_df)
+
     csv_items_ner = items_df_ner.to_csv(index=False).encode("utf-8")
     st.download_button("Download NER Items CSV", csv_items_ner, "items_ner.csv", "text/csv", key="items-ner-csv-btn")
 
    
-    # تحلیل با Textract Expense (ساختار رسمی AWS)
+    # Analysis with Textract Expense (AWS official structure)
     exp_resp = call_expense_analyzer(img_bytes)
     exp_data = parse_expense_response(exp_resp)
 
-    # اضافه‌کردن دسته‌بندی پیش‌بینی‌شده به آیتم‌های exp_data
+    # Add predicted categories to exp_data items
     for it in exp_data["items"]:
         if isinstance(it, dict) and "item" in it and "price" in it:
             item_name = it["item"]
@@ -186,8 +224,7 @@ def upload_page():
         else:
             print("Warning: Unexpected item structure:", it)
 
-   
-    # جدول متادیتا (فروشگاه، آدرس، تاریخ، تلفن)
+    # Metadata table (store, address, date, phone)
     meta_df = pd.DataFrame([{
         "Store Name": exp_data["store_name"],
         "Address": exp_data["store_address"],
@@ -199,41 +236,46 @@ def upload_page():
     csv_meta = meta_df.to_csv(index=False).encode("utf-8")
     st.download_button("Download metadata CSV", csv_meta, "metadata.csv", "text/csv", key="meta-csv-btn")
 
-    # ذخیره فایل OCR در output
+    # Save OCR file in output directory
     text_hash = hashlib.sha256(result["text"].encode()).hexdigest()
     ocr_path  = OUTPUT_DIR / f"{text_hash}.txt"
     with open(ocr_path, "w", encoding="utf-8") as f:
         f.write(result["text"])
 
-    # آماده‌سازی داده برای دیتابیس
+    # Prepare data for database
     parsed = exp_data
     date_str = parsed["date"]
     purchase_date = parse_datetime_safe(date_str)
+    
+    # Fix: Use items from result instead of parsed["items"]
     items_list = []
-    for it in parsed["items"]:
-        if isinstance(it, dict) and "item" in it and "price" in it:
-            items_list.append({
-                "name": it["item"],
-                "price": it["price"],
-                "count": it.get("quantity", 1),
-                "category": it.get("category", "")
-            })
-        else:
-            print("Warning: unexpected item format in items_list:", it)
-    # ذخیره در دیتابیس با مدیریت ارور
+    for item in result["items"]:
+        items_list.append({
+            "name": item["item"],
+            "price": item["price"],
+            "count": item["quantity"],
+            "category": item["category"]
+        })
+
     try:
         receipt = db.save_receipt(
             st.session_state.user_id,
             parsed["store_name"] or "",
             purchase_date,
-            items_list,
+            items_list,  # Now contains actual items
             store_address=parsed.get("store_address"),
             phone=parsed.get("phone"),
             text_hash=text_hash,
             ocr_path=str(ocr_path),
+            total_amount=total_amount
         )
-        st.success("Receipt successfully saved.")
+        st.success(f"Receipt successfully saved. Total amount: ${total_amount:.2f}")
+        
+        # Log the total amount for debugging
+        logging.info(f"Saved receipt with total_amount: ${total_amount:.2f}")
+        
     except Exception as e:
+        logging.error(f"Error saving receipt: {e}, total_amount: {total_amount}")
         if "UNIQUE constraint failed: receipts.text_hash" in str(e):
             st.warning("This receipt has already been uploaded and cannot be registered again.")
         else:
@@ -242,7 +284,11 @@ def upload_page():
 
 def history_page():
     st.title("🕒 Receipt History")
-    render_receipt_history(db, st.session_state.user_id, classifier)
+    try:
+        render_receipt_history(db, st.session_state.user_id, classifier)
+    except Exception as e:
+        logging.error(f"Error in history page: {e}")
+        st.error("An error occurred loading the history. Please try refreshing the page.")
 
 def dashboard_page():
     st.title("📊 Dashboard")
@@ -277,4 +323,14 @@ def main():
         profile_page()
 
 if __name__ == "__main__":
+    # logging
+    logging.basicConfig(
+        filename='app.log',
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s'
+    )
+    # Classifier
+    @lru_cache(maxsize=1000)
+    def cached_predict_category(item_name: str) -> str:
+        return classifier.predict_category(item_name)
     main()

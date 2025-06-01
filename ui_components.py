@@ -1,9 +1,28 @@
+from typing import Optional
+import time
+from functools import lru_cache
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
-from typing import Dict, Any
 
+
+# Rate limiting for login attempts
+LOGIN_ATTEMPT_LIMIT = 5
+login_attempts = {}
+
+def check_rate_limit(username: str) -> bool:
+    current_time = time.time()
+    if username in login_attempts:
+        attempts = [t for t in login_attempts[username] if current_time - t < 3600]
+        login_attempts[username] = attempts
+        return len(attempts) < LOGIN_ATTEMPT_LIMIT
+    return True
+
+@lru_cache(maxsize=100)
+def get_cached_receipt_data(receipt_id: int) -> Optional[dict]:
+    # ...cache receipt data...
+    pass
 
 # ---- فرم ورود/ثبت‌نام ----
 def render_login(db):
@@ -29,12 +48,21 @@ def render_login(db):
         username = st.text_input("Username", key="li_user")
         password = st.text_input("Password", type="password", key="li_pw")
         if st.button("Login"):
+            if not check_rate_limit(username):
+                st.error("Too many login attempts. Please try again later.")
+                return
+                
             uid = db.authenticate_user(username, password)
             if uid:
-                st.session_state.user_id  = uid
+                st.session_state.user_id = uid
                 st.session_state.username = username
+                login_attempts.pop(username, None)  # Reset attempts on success
                 st.experimental_rerun()
             else:
+                if username in login_attempts:
+                    login_attempts[username].append(time.time())
+                else:
+                    login_attempts[username] = [time.time()]
                 st.error("Invalid username or password.")
 
 # ---- دکمه‌ی خروج ----
@@ -53,7 +81,7 @@ def render_upload():
 def render_history(db, user_id: int):
     df = db.get_receipts_by_user_df(user_id)
     if df.empty:
-        st.info("هیچ رسیده‌ای موجود نیست.")
+        st.info("No receipts found.")
     else:
         st.subheader("🕒 Receipt History")
         st.dataframe(df[["id","purchase_date","store_name","total_amount"]])
@@ -64,7 +92,7 @@ def render_dashboard(db, user_id: int):
     # گرفتن همه رسیدها و آیتم‌ها
     receipts = db.get_receipts_by_user(user_id)
     if not receipts:
-        st.info("داده‌ای برای نمایش وجود ندارد.")
+        st.info("No data available to display.")
         return
 
     # محاسبه بازه کل رسیدها
@@ -350,51 +378,58 @@ def render_profile(db, user_id: int):
 
 def render_receipt_history(db, user_id, classifier):
     """
-    لیست رسیدهای کاربر با user_id را از دیتابیس بخواند
-    و در قالب جدول نمایش دهد.
+    Read and display user receipts from database in table format
     """
-    # فرض می‌کنیم db.get_receipts(user_id) لیستی از دیکشنری‌های {id, date, total, store_name} برمی‌گرداند
     receipts_df = db.get_receipts_by_user_df(user_id)
     if receipts_df.empty:
-        st.info("هیچ رسیدی یافت نشد.")
+        st.info("No receipts found.")
         return
 
-    # تغییر نام ستون‌ها و نمایش دیتافریم
+    # Convert numeric columns to float type
+    if "total_amount" in receipts_df.columns:
+        receipts_df["total_amount"] = pd.to_numeric(receipts_df["total_amount"], errors='coerce').fillna(0.0)
+
+    # Rename and format columns
     df = receipts_df.rename(columns={
         "id": "ID",
         "date": "Date",
-        "total": "Total",
-        "store_name": "store_name"
+        "total_amount": "Total Amount",
+        "store_name": "Store"
     })
+    
+    # Format total amount with 2 decimal places and add dollar sign
+    df["Total Amount"] = df["Total Amount"].apply(lambda x: f"${x:.2f}")
+    
+    # Reorder columns to show Total Amount after Store
+    df = df[["ID", "Date", "Store", "Total Amount"]]
     
     st.subheader("📜 Receipt History")
     st.dataframe(df, use_container_width=True)
     
-
-    # انتخاب یک رسید برای نمایش جزئیات
+    # Receipt details
     sel = st.selectbox("Choose receipt for detail", df["ID"])
-    items = db.get_items_by_receipt(sel)  # لیست آبجکت‌های Item
+    items = db.get_items_by_receipt(sel)
 
-    # تبدیل آبجکت Item به دیکشنری
+    if not items:
+        st.info("No items found for this receipt")
+        return
+
     items_list = [
         {
             "Product Name": it.item_name,
-            "Price": it.price,
-            "Saved Category": it.category,
-            "Suggested Category": classifier.predict_category(it.item_name)
+            "Price": f"${it.price:.2f}" if it.price else "$0.00",
+            "Quantity": it.quantity or 1,
+            "Total": f"${(it.price * (it.quantity or 1)):.2f}",
+            "Category": it.category or "Uncategorized"
         }
         for it in items
     ]
-    # تبدیل لیست به دیتافریم
+
     df_items = pd.DataFrame(items_list)
     df_items.insert(0, "Row", range(1, len(df_items) + 1))
-    print(df_items.columns)
-    
-
-    df_items["Price"] = df_items["Price"].apply(lambda x: f"{x:.2f}")
 
     st.write("**Receipt Details:**")
-    st.table(df_items.to_dict("records"))
+    st.table(df_items)
 
     st.write("---")
     CATEGORIES = [
@@ -407,7 +442,7 @@ def render_receipt_history(db, user_id, classifier):
 
 def render_receipt_items_editable(db, receipt_id, categories):
     """
-    یک جدول ویرایش‌پذیر برای آیتم‌های رسید بر اساس دسته‌بندی
+    An editable table for receipt items based on categories
     """
     items = db.get_items_by_receipt(receipt_id)
     st.write("📝 Edit Categories (Save to retrain your model!)")
@@ -434,4 +469,4 @@ def render_receipt_items_editable(db, receipt_id, categories):
                 # ذخیره تغییرات در CSV مخصوص آموزش مدل:
                 with open("Corrected_training_data.csv", "a", encoding="utf-8") as f:
                     f.write(f"{u['item_name']},{u['new_category']}\n")
-        st.success("Categories updated!")    
+        st.success("Categories updated!")

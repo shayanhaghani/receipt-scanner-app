@@ -1,0 +1,36 @@
+: Leaside LEA
+416-484-0090
+1860 Bayview Ave
+: 1860 Bayview Ave
+: 1860 Bayview Ave
+: WHOLE
+FOODS
+R
+MARKET
+VISA
+453780******3391: $4.
+Employee Discount 20.0%: -$0.94
+DATE: 17-03-25
+TRANS: 49092
+TAX: 864826995
+TAX: 0.49
+Balance to pay: $4.24
+Balance to pay: $4.24
+: Leaside LEA
+416-484-0090
+1860 Bayview Ave
+: WHOLE
+FOODS
+R
+MARKET
+: 416-484-0090
+: http: //www.wfm.com/CANfeedback
+TAX IND: H
+RATE: 13.0%
+GROSS: 3.75
+No. items: 1
+STORE: 10500
+TILL: 257
+OP NO.: 12416325
+TIME: 15: 25
+ITEM: TORTILLAS WHITE OG | PRICE: $4.69 | EXPENSE_ROW: TORTILLAS WHITE OG $4.69 H

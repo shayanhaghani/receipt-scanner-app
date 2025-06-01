@@ -4,32 +4,46 @@ from pathlib import Path
 import spacy
 import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
+import logging
+from typing import Optional, Dict, List, Tuple
 
 class ReceiptParser:
     """
-    کلاس برای پردازش رسید:
-    - استخراج متن با AWS Textract
-    - تشخیص موجودیت‌ها با مدل NER
-    - دسته‌بندی آیتم‌ها با مدل طبقه‌بندی
+    Class for receipt processing:
+    - Text extraction using AWS Textract
+    - Entity recognition using NER model
+    - Item classification using classification model
     """
 
     def __init__(
-        self,
+        self, 
         ner_model_path: str = "receipt_ner_model",
-        cls_model_path: str | Path = None,
-        aws_region: str = "us-east-1"
+        cls_model_path: Optional[str | Path] = None,
+        aws_region: str = "us-east-1",
+        retry_attempts: int = 3
     ):
-        # بارگذاری مدل‌های NER و دسته‌بندی
+        # Load NER and classification models
         self.ner_model = spacy.load(str(ner_model_path))
-        # مسیر پیش‌فرض مدل طبقه‌بندی
+        # Default path for classification model
         if cls_model_path is None:
             base_dir = Path(__file__).resolve().parent
             cls_model_path = base_dir / "product_classifier" / "training" / "model-best"
         self.cls_model = spacy.load(str(cls_model_path))
-        # مقداردهی Textract client با ریجن مشخص
+        # Initialize Textract client with specified region
         self.textract = boto3.client("textract", region_name=aws_region)
+        self.retry_attempts = retry_attempts
 
     def analyze_bytes(self, image_bytes: bytes) -> dict:
+        for attempt in range(self.retry_attempts):
+            try:
+                return self._try_analyze_bytes(image_bytes)
+            except Exception as e:
+                if attempt == self.retry_attempts - 1:
+                    logging.error(f"Final attempt failed: {e}")
+                    raise
+                logging.warning(f"Attempt {attempt + 1} failed: {e}")
+                
+    def _try_analyze_bytes(self, image_bytes: bytes) -> dict:
         """
         فراخوانی AWS Textract analyze_expense برای OCR با اعتبارسنجی اولیه
         """
@@ -78,12 +92,13 @@ class ReceiptParser:
                         lines.append(" | ".join(parts))
         return "\n".join(lines)
 
-    def extract_entities(self, text: str) -> list[tuple[str, str]]:
-        """
-        اجرای مدل NER و بازگرداندن لیستی از جفت‌های (متن، برچسب)
-        """
-        doc = self.ner_model(text)
-        return [(ent.text, ent.label_) for ent in doc.ents]
+    def extract_entities(self, text: str) -> List[Tuple[str, str]]:
+        try:
+            doc = self.ner_model(text)
+            return [(ent.text, ent.label_) for ent in doc.ents]
+        except Exception as e:
+            logging.error(f"NER processing error: {e}")
+            return []
 
     def predict_category(self, text: str) -> str:
         """
@@ -117,64 +132,71 @@ class ReceiptParser:
         return agg
 
     def parse(self, image_bytes: bytes) -> dict:
-        """
-        روش کلی:
-        1. فراخوانی analyze_bytes برای OCR دریافت پاسخ
-        2. extract_text گرفتن متن خام
-        3. extract_entities شناسایی موجودیت‌ها
-        4. aggregate_items تجمیع آیتم‌ها
-        5. محاسبه مجموع و مالیات و تخفیف
-        """
-        # 1. OCR
+        # 1. OCR and basic extraction
         response = self.analyze_bytes(image_bytes)
-        # 2. استخراج متن خام
         text = self.extract_text(response)
-        # 3. شناسایی موجودیت‌ها
         entities = self.extract_entities(text)
-        # 4. تجمیع آیتم‌ها
         items = self.aggregate_items(entities)
         result_items = []
+        
+        # 2. Calculate raw subtotal from items
+        subtotal = 0.0
         for (item, price), val in items.items():
+            item_total = price * val["count"]
+            subtotal += item_total
             result_items.append({
                 "item": item,
                 "price": price,
                 "quantity": val["count"],
-                "category": val["category"]
+                "category": val["category"],
+                "total": item_total
             })
 
-
-        return {
-            "text": text,
-            "entities": entities,
-            "items": result_items,
-            # سایر مقادیر در صورت نیاز
-        }
-
-        # محاسبات اضافی: جمع کل، مالیات و تخفیف
-        def _find_amount(labels):
-            for val, lab in entities:
-                print(val, lab)
-                if lab in labels:
+        # 3. Get final total first (we need this for accurate calculations)
+        total_amount = 0.0
+        for doc in response.get("ExpenseDocuments", []):
+            for field in doc.get("SummaryFields", []):
+                if field.get("Type", {}).get("Text", "").upper() in ["TOTAL", "BALANCE DUE", "BALANCE TO PAY", "TOTAL_AMOUNT"]:
                     try:
-                        return float(val.replace(',', ''))
-                    except ValueError:
+                        total_str = field.get("ValueDetection", {}).get("Text", "0")
+                        total_amount = float(total_str.replace("$", "").replace(",", ""))
+                        break
+                    except (ValueError, AttributeError):
                         continue
-            return 0.0
 
-        total = _find_amount(["TOTAL", "TOTAL_AMOUNT"])
-        tax = _find_amount(["TAX", "TAX_AMOUNT"])
-        discount = _find_amount(["DISCOUNT", "DISCOUNT_AMOUNT"])
+        # 4. Find discount from receipt
+        discount = 0.0
+        for doc in response.get("ExpenseDocuments", []):
+            for field in doc.get("SummaryFields", []):
+                field_type = field.get("Type", {}).get("Text", "").upper()
+                if "DISCOUNT" in field_type:
+                    try:
+                        discount_str = field.get("ValueDetection", {}).get("Text", "0")
+                        discount = abs(float(discount_str.replace("$", "").replace(",", "").replace("-", "")))
+                        break
+                    except (ValueError, AttributeError):
+                        continue
+
+        # 5. Calculate subtotal after discount
+        subtotal_after_discount = subtotal - discount
+
+        # 6. Calculate tax as difference between total and subtotal_after_discount
+        tax = round(total_amount - subtotal_after_discount, 2)
+
+        # 7. Get date and generate hash
         date = next((val for val, lab in entities if lab == "DATE"), "unknown")
         text_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
 
         return {
             "text": text,
             "entities": entities,
-            "items": items,
-            "total": total,
-            "tax": tax,
-            "discount": discount,
+            "items": result_items,
+            "subtotal": subtotal,  
+            "discount": discount,  
+            "subtotal_after_discount": subtotal_after_discount,  
+            "tax": tax,  
+            "total_amount": total_amount,  
             "date": date,
             "text_hash": text_hash,
-            "textract_response": response,
+            "textract_response": response
         }
