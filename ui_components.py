@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import logging  # Add this import
+import json
 
 # Configure logging
 logging.basicConfig(
@@ -444,25 +445,84 @@ def render_admin_panel(db):
     try:
         users = db.get_all_users()
         if not users:
-            st.warning("هیچ کاربری پیدا نشد.")
+            st.warning("هیچ کاربری وجود ندارد.")
             return
-        
-        st.subheader("👥 کاربران")
-        user_map = {f"{u.username} ({u.email})": u.id for u in users}
-        selected_user = st.selectbox("انتخاب کاربر برای مشاهده رسیدها", list(user_map.keys()))
-        selected_id = user_map[selected_user]
 
-        receipts = db.get_receipts_by_user(selected_id)
-        total_amount = sum(r.total_amount or 0 for r in receipts)
+        st.markdown("## 📋 لیست تمام رسیدهای کاربران")
 
-        st.markdown(f"**تعداد رسیدها:** {len(receipts)}")
-        st.markdown(f"**مجموع خرید:** ${total_amount:,.2f}")
+        # جمع‌آوری داده‌ها
+        data = []
+        for user in users:
+            receipts = db.get_receipts_by_user(user.id)
+            for r in receipts:
+                data.append({
+                    "user": user.username,
+                    "email": user.email,
+                    "receipt_id": r.id,
+                    "date": r.date.strftime("%Y-%m-%d %H:%M"),
+                    "store": r.store.name if r.store else "—",
+                    "total": r.total_amount or 0.0,
+                })
 
-        if receipts:
-            with st.expander("📜 لیست رسیدها"):
-                for r in receipts:
-                    store = r.store.name if r.store else "—"
-                    st.markdown(f"- {r.date.strftime('%Y-%m-%d')} | {store} | ${r.total_amount:.2f}")
-    
+        if not data:
+            st.info("هیچ رسیدی ثبت نشده.")
+            return
+
+        df = pd.DataFrame(data)
+        df = df.sort_values("date", ascending=False)
+        df["ردیف"] = range(1, len(df) + 1)
+        df = df[["ردیف", "date", "store", "total", "user", "receipt_id"]]  # ترتیب ستون‌ها
+        df = df.rename(columns={
+            "date": "تاریخ و ساعت",
+            "store": "فروشگاه",
+            "total": "مبلغ کل",
+            "user": "نام کاربر",
+            "receipt_id": "جزئیات رسید"
+        })
+
+        st.dataframe(df, use_container_width=True, hide_index=True)
+
+        # انتخاب رسید برای مشاهده
+        selected_id = st.selectbox(
+            "🔍 انتخاب رسید برای مشاهده جزئیات:",
+            options=df["جزئیات رسید"].tolist(),
+            format_func=lambda x: f"رسید #{x}"
+        )
+        if selected_id:
+            st.subheader(f"📋 جزئیات رسید #{selected_id}")
+            render_single_receipt_view(db, selected_id)
     except Exception as e:
-        st.error(f"خطا در بارگذاری پنل مدیریت: {str(e)}")
+        st.error(f"خطا در بارگذاری رسیدها: {str(e)}")
+
+def render_single_receipt_view(db, receipt_id: int):
+    """نمایش جزئیات فقط یک رسید برای استفاده در پنل ادمین"""
+    receipt = db.get_receipt_by_id(receipt_id)
+    if not receipt:
+        st.warning("رسید یافت نشد.")
+        return
+
+    store_name = receipt.store.name if receipt.store else "Unknown Store"
+    date_str = receipt.date.strftime('%Y-%m-%d %H:%M') if receipt.date else "Unknown Date"
+    total_amount = float(receipt.total_amount or 0)
+
+    st.markdown(f"### 🧾 {store_name} | {date_str} | ${total_amount:.2f}")
+
+    try:
+        if not receipt.items or receipt.items.strip() in ("", "[]"):
+            st.warning("هیچ آیتمی برای این رسید ثبت نشده.")
+            return
+
+        items = json.loads(receipt.items)
+
+        df_items = pd.DataFrame([{
+            "نام آیتم": item.get("name", "—"),
+            "تعداد": item.get("count", 1),
+            "قیمت": item.get("price", 0.0),
+            "دسته": item.get("category", "—"),
+            "مجموع": item.get("price", 0.0) * item.get("count", 1)
+        } for item in items])
+
+        st.dataframe(df_items, use_container_width=True, hide_index=True)
+
+    except Exception as e:
+        st.error(f"خطا در بارگذاری آیتم‌ها از JSON: {str(e)}")

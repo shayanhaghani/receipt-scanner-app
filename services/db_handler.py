@@ -251,3 +251,11 @@ class DBHandler:
             return session.query(User).order_by(User.created_at.desc()).all()
         finally:
             session.close()
+
+
+    def get_receipt_by_id(self, receipt_id: int):
+        session = self.get_session()
+        try:
+            return session.query(Receipt).options(joinedload(Receipt.store)).filter_by(id=receipt_id).first()
+        finally:
+            session.close()

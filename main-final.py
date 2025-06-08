@@ -390,10 +390,11 @@ def main():
     if st.session_state.logged_in:
         with st.sidebar:
             st.write(f"👋 Welcome, {st.session_state.username}!")
-            st.write("is_admin =", st.session_state.get("is_admin"))
-            pages = ["Dashboard", "Upload", "History", "Profile"]
             if st.session_state.get("is_admin"):
-                pages.append("Admin Panel")
+                pages = ["Admin Panel", "Profile"]  # فقط ادمین
+            else:
+                pages = ["Dashboard", "Upload", "History", "Profile"]  # کاربران معمولی
+
             page = st.radio("Navigate to", pages)
             st.session_state.current_page = page.lower()
             render_logout()
