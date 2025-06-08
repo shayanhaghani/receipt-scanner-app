@@ -1,9 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session, joinedload
 from config import DATABASE_URL
-from models import Base, User, Receipt, Item, Store  # import all models here
+from models import Base, User, Receipt, Item, Store
 from passlib.context import CryptContext
 from datetime import datetime
+import logging
+import json
+import pandas as pd  # Add this import
 
 
 # Password‐hashing context for user authentication
@@ -60,7 +63,7 @@ class DBHandler:
             user = session.query(User).filter_by(username=username).first()
             if not user:
                 return None
-            if pwd_context.verify(password, user.hashed_password):
+            if pwd_context.verify(password, user.password):  # تغییر از hashed_password به password
                 return user.id
             return None
         finally:
@@ -86,72 +89,74 @@ class DBHandler:
         finally:
             session.close()
 
-    def get_receipts_by_user(self, user_id: int) -> list[Receipt]:
-        """
-        Return all Receipt ORM objects for a given user (with joined store).
-        """
+    def get_receipts_by_user(self, user_id: int) -> list:
+        """Get all receipts for a user with store information"""
         session = self.get_session()
         try:
             return (
                 session.query(Receipt)
                 .options(joinedload(Receipt.store))
-                .filter_by(user_id=user_id)
-                .all()
-            )
-        finally:
-            session.close()
-
-    def get_receipts_by_user_df(self, user_id: int):
-        """
-        Query receipts for a user (eager-load Store) and return a pandas DataFrame.
-        """
-        import pandas as pd
-        from sqlalchemy.orm import joinedload
-        from models import Receipt, Store
-
-        session = self.get_session()
-        try:
-            # Eagerly load the related Store to avoid lazy loading on detached instances
-            receipts = (
-                session.query(Receipt)
-                       .options(joinedload(Receipt.store))
-                       .filter(Receipt.user_id == user_id)
-                       .all()
-            )
-            rows = []
-            for r in receipts:
-                rows.append({
-                    "id": r.id,
-                    "store_name": r.store.name,
-                    "date": r.purchase_date,
-                    "total_amount": r.total_amount,
-                })
-            return pd.DataFrame(rows)
-        finally:
-            session.close()
-
-    def get_all_items_by_user(self, user_id: int) -> list[Item]:
-        """
-        Return all Item ORM objects belonging to a user's receipts.
-        """
-        session = self.get_session()
-        try:
-            return (
-                session.query(Item)
-                .join(Receipt, Item.receipt_id == Receipt.id)
                 .filter(Receipt.user_id == user_id)
                 .all()
             )
         finally:
             session.close()
 
-    def get_items_by_receipt(self, receipt_id: int) -> list[Item]:
+    def get_receipts_by_user_df(self, user_id: int) -> pd.DataFrame:
+        """Get all receipts for a user as a pandas DataFrame"""
+        receipts = self.get_receipts_by_user(user_id)
+        
+        data = [{
+            'id': r.id,
+            'date': r.date,
+            'store_name': r.store.name if r.store else None,
+            'total_amount': r.total_amount,
+            'subtotal': r.subtotal,
+            'tax': r.tax,
+            'discount': r.discount
+        } for r in receipts]
+        
+        df = pd.DataFrame(data)
+        return df
+
+    def get_all_items_by_user(self, user_id: int) -> list:
         """
-        Fetch all Item ORM objects for a given receipt ID.
+        Return all items from user's receipts
         """
         session = self.get_session()
         try:
-            return session.query(Item).filter_by(receipt_id=receipt_id).all()
+            receipts = (
+                session.query(Receipt)
+                .filter(Receipt.user_id == user_id)
+                .all()
+            )
+            
+            all_items = []
+            for receipt in receipts:
+                if receipt.items:  # اگر items خالی نبود
+                    try:
+                        # تبدیل رشته JSON به لیست دیکشنری
+                        items_list = json.loads(receipt.items)
+                        for item in items_list:
+                            item['receipt_id'] = receipt.id
+                            all_items.append(item)
+                    except json.JSONDecodeError:
+                        logging.error(f"Error decoding items for receipt {receipt.id}")
+                        continue
+                    
+            return all_items
+        finally:
+            session.close()
+
+    def get_items_by_receipt(self, receipt_id: int) -> list:
+        """Get all items for a specific receipt"""
+        session = self.get_session()
+        try:
+            return (
+                session.query(Item)
+                .filter_by(receipt_id=receipt_id)
+                .all()
+            )
         finally:
             session.close()
 
@@ -159,89 +164,69 @@ class DBHandler:
         self,
         user_id: int,
         store_name: str,
-        purchase_date,
+        purchase_date: datetime,
         items: list[dict],
         **kwargs
-    ) -> Receipt:
-        """
-        Save a new Receipt and its Items.
-        
-        Parameters:
-        - user_id: ID of the logged-in User
-        - store_name: name of the vendor/store
-        - purchase_date: datetime of purchase
-        - items: list of dicts, each with keys 'name', 'price', 'count', maybe 'category'
-        - **kwargs: store_address, phone, tax_amount, etc. (ignored if not used)
-        """
+    ):
         session = self.get_session()
         try:
-            # 1) find or create Store
+            # پیدا کردن یا ایجاد فروشگاه
             store = session.query(Store).filter_by(name=store_name).first()
             if not store:
                 store = Store(
                     name=store_name,
-                    location=kwargs.get("store_address")
+                    address=kwargs.get('store_address'),
+                    phone=kwargs.get('phone')
                 )
                 session.add(store)
-                session.commit()
-                session.refresh(store)
+                session.flush()  # برای گرفتن store.id
 
-            # 2) create Receipt (we compute total_amount from items)
-            total = sum(
-                (itm.get("price") or 0) * (itm.get("count") or 1)
-                for itm in items
-            )
+            # ایجاد رسید
             receipt = Receipt(
                 user_id=user_id,
                 store_id=store.id,
-                purchase_date=purchase_date,
-                total_amount=total,
-                # optional fields if your model has them:
-                tax_amount=kwargs.get("tax_amount"),
-                discount_amount=kwargs.get("discount_amount"),
-                text_hash=kwargs.get("text_hash"),
-                ocr_path=kwargs.get("ocr_path"),
+                date=purchase_date,  # تغییر از purchase_date به date
+                items=json.dumps(items),
+                text_hash=kwargs.get('text_hash'),
+                ocr_path=kwargs.get('ocr_path'),
+                total_amount=kwargs.get('total_amount', 0.0),
+                subtotal=kwargs.get('subtotal', 0.0),
+                discount=kwargs.get('discount', 0.0),
+                tax=kwargs.get('tax', 0.0),
+                subtotal_after_discount=kwargs.get('subtotal_after_discount', 0.0)
             )
             session.add(receipt)
             session.commit()
-            session.refresh(receipt)
-
-            # 3) save each Item
-            for itm in items:
-                obj = Item(
-                    receipt_id=receipt.id,
-                    item_name=itm.get("name"),
-                    quantity=itm.get("count", 1),
-                    price=itm.get("price"),
-                    category=itm.get("category"),
-                )
-                session.add(obj)
-            session.commit()
-
             return receipt
+        except Exception as e:
+            session.rollback()
+            raise
         finally:
             session.close()
 
-    def create_user(self, username: str, email: str, password: str) -> int:
+    def create_user(self, username: str, email: str, password: str, is_admin: bool = False) -> int:
         """
-        - Create a new User with hashed password.
-        - Returns the new user's ID.
+        - ایجاد کاربر جدید با رمز عبور رمزنگاری شده
+        - برگرداندن شناسه کاربر جدید
         """
         session = self.get_session()
         try:
-            # hash the plain password
+            # رمزنگاری رمز عبور
             hashed_pw = pwd_context.hash(password)
-            # build the User object
+            # ایجاد کاربر جدید با نام ستون صحیح (password)
             user = User(
                 username=username,
                 email=email,
-                hashed_password=hashed_pw,
+                password=hashed_pw,  # تغییر از password_hash به password
                 created_at=datetime.utcnow()
             )
             session.add(user)
             session.commit()
             session.refresh(user)
             return user.id
+        except Exception as e:
+            logging.error(f"خطا در ایجاد کاربر: {e}")
+            raise
         finally:
             session.close()
         
@@ -257,5 +242,12 @@ class DBHandler:
             if item:
                 item.category = new_category
                 session.commit()
+        finally:
+            session.close()
+    
+    def get_all_users(self):
+        session = self.get_session()
+        try:
+            return session.query(User).order_by(User.created_at.desc()).all()
         finally:
             session.close()

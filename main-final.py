@@ -1,8 +1,10 @@
 import os
 import hashlib
+import json
 import logging
 from functools import lru_cache
 from pathlib import Path
+from ui_components import render_admin_panel
 from datetime import datetime
 from config import (
     BASE_DIR,
@@ -32,8 +34,7 @@ from services.textract_service import (
     parse_expense_response,
 )
 import pandas as pd
-
-from database import engine
+from services.db_handler import DBHandler, engine
 from models import Base
 from services.db_handler import DBHandler
 from receipt_parser import ReceiptParser
@@ -112,8 +113,11 @@ def auth_flow():
         if st.button("Login"):
             uid = db.authenticate_user(u, p)
             if uid:
+                user_obj = db.get_user(uid)
                 st.session_state.user_id = uid
                 st.session_state.username = u
+                st.session_state.logged_in = True
+                st.session_state.is_admin = user_obj.is_admin if user_obj else False
                 st.experimental_rerun()
             else:
                 st.error("Invalid credentials.")
@@ -259,36 +263,106 @@ def upload_page():
 
     try:
         receipt = db.save_receipt(
-            st.session_state.user_id,
-            parsed["store_name"] or "",
-            purchase_date,
-            items_list,  # Now contains actual items
-            store_address=parsed.get("store_address"),
-            phone=parsed.get("phone"),
+            user_id=st.session_state.user_id,
+            store_name=parsed["store_name"],  # از parsed استفاده کنیم
+            purchase_date=purchase_date,       # از purchase_date که قبلاً parse شده استفاده کنیم
+            items=items_list,
+            store_address=parsed["store_address"],
+            phone=parsed["phone"],
             text_hash=text_hash,
             ocr_path=str(ocr_path),
-            total_amount=total_amount
+            total_amount=total_amount,
+            subtotal=subtotal,
+            discount=discount,
+            tax=tax,
+            subtotal_after_discount=subtotal_after_discount
         )
         st.success(f"Receipt successfully saved. Total amount: ${total_amount:.2f}")
         
-        # Log the total amount for debugging
-        logging.info(f"Saved receipt with total_amount: ${total_amount:.2f}")
-        
     except Exception as e:
-        logging.error(f"Error saving receipt: {e}, total_amount: {total_amount}")
+        logging.error(f"Error saving receipt: {e}")
         if "UNIQUE constraint failed: receipts.text_hash" in str(e):
-            st.warning("This receipt has already been uploaded and cannot be registered again.")
+            st.warning("This receipt has already been uploaded.")
         else:
             st.error(f"Error saving receipt: {str(e)}")
 
 
+def render_receipt_history(db, user_id, classifier):
+    try:
+        receipts = db.get_receipts_by_user(user_id)
+        if not receipts:
+            st.info("No receipts found. Upload some receipts to see them here!")
+            return
+        for receipt in receipts:
+            store_name = receipt.store.name if receipt.store else "Unknown Store"
+            date_str = receipt.date.strftime('%Y-%m-%d') if receipt.date else "Unknown Date"
+            total_amount = float(receipt.total_amount or 0)
+
+            with st.expander(f"📜 {store_name} - {date_str} - ${total_amount:.2f}"):
+                col1, col2 = st.columns(2)
+                # ... (بقیه کد خلاصه شده)
+                # آیتم‌ها:
+                if receipt.items:
+                    st.markdown("### 🛍️ Items and Categories")
+                    try:
+                        items = json.loads(receipt.items)
+                    except Exception:
+                        items = []
+
+                    for idx, item in enumerate(items):
+                        col1, col2, col3 = st.columns([3, 2, 2])
+                        with col1:
+                            st.write(f"**{item.get('name', 'Unknown Item')}**")
+                        with col2:
+                            price = float(item.get('price', 0))
+                            quantity = int(item.get('count', 1))
+                            st.write(f"${price:.2f} × {quantity} = ${price * quantity:.2f}")
+                        with col3:
+                            current_category = item.get('category', 'Other')
+                            categories = ["Produce", "Dairy", "Meat", "Bakery", "Beverages", "Other"]
+                            try:
+                                category_index = categories.index(current_category)
+                            except ValueError:
+                                category_index = len(categories) - 1
+                            new_category = st.selectbox(
+                                "Category",
+                                options=categories,
+                                key=f"cat_{receipt.id}_{idx}",
+                                index=category_index
+                            )
+                            # ذخیره‌سازی فقط زمانی انجام شود که کاربر روی دکمه کلیک کند و دسته جدید انتخاب شده باشد
+                            if new_category != current_category:
+                                if st.button("💾 Save", key=f"save_{receipt.id}_{idx}"):
+                                    # آیتم واقعی را پیدا کن (با receipt_id و name و price)
+                                    db_items = db.get_items_by_receipt(receipt.id)
+                                    item_obj = next(
+                                        (it for it in db_items if it.name == item.get('name') and float(it.price) == price),
+                                        None
+                                    )
+                                    if item_obj:
+                                        try:
+                                            db.update_item_category(item_obj.id, new_category)
+                                            # می‌تونی اینجا نمونه آموزش به مدل دسته‌بندی هم اضافه کنی
+                                            # classifier.add_training_example(item['name'], new_category)
+                                            # classifier.train()
+                                            st.success(f"Updated category for '{item['name']}' to {new_category}")
+                                            st.experimental_rerun()
+                                        except Exception as e:
+                                            st.error(f"Failed to update category: {str(e)}")
+                                    else:
+                                        st.error("آیتم مربوطه پیدا نشد.")
+             
+    except Exception as e:
+        logging.error(f"Error in render_receipt_history: {e}")
+        st.error("An error occurred loading the history. Please try refreshing the page.")
+        raise
 def history_page():
     st.title("🕒 Receipt History")
     try:
         render_receipt_history(db, st.session_state.user_id, classifier)
     except Exception as e:
-        logging.error(f"Error in history page: {e}")
-        st.error("An error occurred loading the history. Please try refreshing the page.")
+        st.error(f"Error loading receipt history: {str(e)}")
+        logging.error(f"History page error: {e}")
 
 def dashboard_page():
     st.title("📊 Dashboard")
@@ -301,26 +375,41 @@ def profile_page():
 def logout():
     st.session_state.pop("user_id", None)
     st.session_state.pop("username", None)
+    st.session_state.logged_in = False
     st.experimental_rerun()
 
 def main():
-    st.set_page_config(page_title="SmartReceipt AI", layout="wide")
-    if "user_id" not in st.session_state:
+    # Initialize session state
+    if "logged_in" not in st.session_state:
+        st.session_state.logged_in = False
+        st.session_state.current_page = "login"
+        st.session_state.user_id = None
+        st.session_state.username = None
+    
+    # Add sidebar navigation if logged in
+    if st.session_state.logged_in:
+        with st.sidebar:
+            st.write(f"👋 Welcome, {st.session_state.username}!")
+            st.write("is_admin =", st.session_state.get("is_admin"))
+            pages = ["Dashboard", "Upload", "History", "Profile"]
+            if st.session_state.get("is_admin"):
+                pages.append("Admin Panel")
+            page = st.radio("Navigate to", pages)
+            st.session_state.current_page = page.lower()
+            render_logout()
+        # Page routing
+        if st.session_state.current_page == "dashboard":
+            dashboard_page()
+        elif st.session_state.current_page == "upload":
+            upload_page()  # اضافه کردن صفحه آپلود
+        elif st.session_state.current_page == "history":
+            history_page()
+        elif st.session_state.current_page == "profile":
+            profile_page()
+        elif st.session_state.current_page == "admin panel" and st.session_state.is_admin:
+             render_admin_panel(db)
+    else:
         auth_flow()
-        return
-    st.sidebar.title(f"👤 {st.session_state.username}")
-    page = st.sidebar.selectbox("Navigate to", ["Upload","History","Dashboard","Profile"])
-    if st.sidebar.button("Logout"):
-        logout()
-        return
-    if page=="Upload":
-        upload_page()
-    elif page=="History":
-        history_page()
-    elif page=="Dashboard":
-        dashboard_page()
-    elif page=="Profile":
-        profile_page()
 
 if __name__ == "__main__":
     # logging
